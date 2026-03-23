@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-50 to-slate-100">
@@ -9,7 +11,12 @@ export default function Home() {
             </div>
             <h1 className="text-xl font-bold text-gray-900">Karta AI</h1>
           </div>
-          <p className="text-sm text-gray-600">AI-Powered Chat System</p>
+          <div className="flex items-center gap-6">
+            <Link href="/campaigns" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+              Campaigns
+            </Link>
+            <p className="text-sm text-gray-600">AI-Powered Chat System</p>
+          </div>
         </nav>
       </header>
 

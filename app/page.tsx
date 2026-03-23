@@ -33,32 +33,59 @@ export default function Home() {
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-lg bg-blue-50 p-6">
-                <h3 className="mb-3 font-semibold text-gray-900">
-                  Try These Commands:
+              <div className="rounded-lg bg-blue-50 p-6 border border-blue-200">
+                <h3 className="mb-4 font-semibold text-gray-900">
+                  Getting Started - Try These Commands:
                 </h3>
-                <ul className="space-y-2 text-sm text-gray-700">
-                  <li>• Say <code className="rounded bg-gray-200 px-2 py-1">"hello"</code> to start</li>
-                  <li>• Ask about <code className="rounded bg-gray-200 px-2 py-1">"features"</code> to see what I can do</li>
-                  <li>• Say <code className="rounded bg-gray-200 px-2 py-1">"help"</code> for assistance</li>
-                </ul>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs font-medium text-gray-600 mb-2">General Help:</p>
+                    <ul className="space-y-1 text-sm text-gray-700">
+                      <li>• <code className="rounded bg-white px-2 py-1 border border-blue-200">"hello"</code> - Start a conversation</li>
+                      <li>• <code className="rounded bg-white px-2 py-1 border border-blue-200">"help"</code> - Get help and guidance</li>
+                      <li>• <code className="rounded bg-white px-2 py-1 border border-blue-200">"features"</code> - Learn about Karta AI</li>
+                    </ul>
+                  </div>
+                  <div className="pt-2 border-t border-blue-200">
+                    <p className="text-xs font-medium text-gray-600 mb-2">Campaign Creation:</p>
+                    <ul className="space-y-1 text-sm text-gray-700">
+                      <li>• <code className="rounded bg-white px-2 py-1 border border-green-200">"create campaign"</code> - Launch campaign wizard</li>
+                      <li>• <code className="rounded bg-white px-2 py-1 border border-green-200">"new campaign"</code> - Start a new email/SMS campaign</li>
+                      <li>• <code className="rounded bg-white px-2 py-1 border border-green-200">"campaign"</code> - Get campaign creation help</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-lg border border-gray-200 p-4 text-center">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-6">
+                <div className="rounded-lg border border-gray-200 p-4 text-center hover:shadow-md transition-shadow">
                   <div className="mb-2 text-2xl">💬</div>
                   <h4 className="font-semibold text-gray-900">Chat</h4>
                   <p className="text-xs text-gray-600">Real-time conversation</p>
                 </div>
-                <div className="rounded-lg border border-gray-200 p-4 text-center">
+                <div className="rounded-lg border border-gray-200 p-4 text-center hover:shadow-md transition-shadow">
                   <div className="mb-2 text-2xl">⚡</div>
                   <h4 className="font-semibold text-gray-900">Actions</h4>
                   <p className="text-xs text-gray-600">Smart automation</p>
                 </div>
-                <div className="rounded-lg border border-gray-200 p-4 text-center">
+                <div className="rounded-lg border border-gray-200 p-4 text-center hover:shadow-md transition-shadow">
                   <div className="mb-2 text-2xl">🎯</div>
-                  <h4 className="font-semibold text-gray-900">Global</h4>
-                  <p className="text-xs text-gray-600">Always available</p>
+                  <h4 className="font-semibold text-gray-900">Campaigns</h4>
+                  <p className="text-xs text-gray-600">Email & SMS marketing</p>
+                </div>
+              </div>
+
+              <div className="rounded-lg bg-gray-50 p-6 border border-gray-200">
+                <h3 className="mb-3 font-semibold text-gray-900">Installation & Setup</h3>
+                <div className="space-y-3 text-sm text-gray-700">
+                  <p>This project is ready to run. Simply:</p>
+                  <ol className="list-decimal list-inside space-y-2 text-gray-600 ml-2">
+                    <li>Install dependencies: <code className="rounded bg-white px-2 py-1 border border-gray-300">npm install</code> or <code className="rounded bg-white px-2 py-1 border border-gray-300">pnpm install</code></li>
+                    <li>Start the dev server: <code className="rounded bg-white px-2 py-1 border border-gray-300">npm run dev</code></li>
+                    <li>Open the chat: Click the blue chat button in the bottom-right corner</li>
+                    <li>Try a command: Type "create campaign" to open the campaign wizard</li>
+                  </ol>
+                  <p className="pt-2 text-xs text-gray-600 italic">The chat supports smart actions and can open modals, navigate, and trigger complex workflows.</p>
                 </div>
               </div>
             </div>

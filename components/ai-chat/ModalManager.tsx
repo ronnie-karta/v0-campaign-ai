@@ -1,6 +1,7 @@
 "use client";
 
 import { useAIAgent } from "@/store/useAIAgentStore";
+import { CampaignModal } from "@/components/campaigns/CampaignModal";
 
 export const ModalManager = () => {
   const { activeModal, modalData, setActiveModal } = useAIAgent();
@@ -9,6 +10,12 @@ export const ModalManager = () => {
     return null;
   }
 
+  // Render campaign modal
+  if (activeModal === "campaign-creation") {
+    return <CampaignModal onClose={() => setActiveModal(null)} />;
+  }
+
+  // Render generic modal
   const handleClose = () => {
     setActiveModal(null);
   };

@@ -7,7 +7,7 @@ export interface Message {
 }
 
 // Action types for extensible action system
-export type ActionType = "OPEN_MODAL" | "NAVIGATE" | "SET_STATE";
+export type ActionType = "OPEN_MODAL" | "NAVIGATE" | "SET_STATE" | "OPEN_CAMPAIGN";
 
 export interface Action {
   type: ActionType;

@@ -12,6 +12,12 @@ export const dispatchAction = (action: Action, router?: any) => {
       break;
     }
 
+    case "OPEN_CAMPAIGN": {
+      const campaignData = action.payload?.data;
+      store.setActiveModal("campaign-creation", campaignData);
+      break;
+    }
+
     case "NAVIGATE": {
       if (!router) {
         console.warn("Router not provided for NAVIGATE action");

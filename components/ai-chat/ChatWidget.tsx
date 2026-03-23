@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAIAgent } from "@/store/useAIAgentStore";
+import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatWindow } from "./ChatWindow";
 
 export const ChatWidget = () => {

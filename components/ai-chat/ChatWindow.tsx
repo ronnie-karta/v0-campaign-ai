@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useAIAgent } from "@/store/useAIAgentStore";
+import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 

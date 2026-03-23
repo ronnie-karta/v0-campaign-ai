@@ -8,7 +8,7 @@ import { DeliveryStep } from './steps/DeliveryStep';
 import { PaymentStep } from './steps/PaymentStep';
 import { StepIndicator } from './StepIndicator';
 import { CampaignData } from '@/lib/campaign-types';
-import { useAIAgent } from '@/store/useAIAgentStore';
+import { useAIAgent } from '@/hooks/useAIAgent';
 
 const STEPS = ['Campaign', 'Customise', 'Recipients', 'Delivery', 'Payment'];
 

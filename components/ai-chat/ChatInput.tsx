@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useAIAgent } from "@/store/useAIAgentStore";
+import { useAIAgent } from "@/hooks/useAIAgent";
 
 export const ChatInput = () => {
   const [input, setInput] = useState("");

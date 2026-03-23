@@ -1,6 +1,6 @@
 "use client";
 
-import { useAIAgent } from "@/store/useAIAgentStore";
+import { useAIAgent } from "@/hooks/useAIAgent";
 import { CampaignModal } from "@/components/campaigns/CampaignModal";
 
 export const ModalManager = () => {

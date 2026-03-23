@@ -1,0 +1,15 @@
+
+> my-project@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 1026ms
+
+○ Compiling / ...
+ GET / 200 in 7.2s (next.js: 6.5s, application-code: 694ms)
+ POST /api/chat 200 in 1372ms (next.js: 539ms, application-code: 833ms)
+[browser] Each child in a list should have a unique "key" prop.
+
+Check the render method of `StepIndicator`. See https://react.dev/link/warning-keys for more information.

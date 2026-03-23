@@ -1,14 +1,16 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { ChatWidget } from '@/components/ai-chat/ChatWidget'
+import { ModalManager } from '@/components/ai-chat/ModalManager'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'Karta AI',
+  description: 'AI-powered chat and assistance system',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -38,6 +40,8 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-sans antialiased">
         {children}
+        <ChatWidget />
+        <ModalManager />
         <Analytics />
       </body>
     </html>

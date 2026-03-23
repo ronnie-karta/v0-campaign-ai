@@ -8,11 +8,33 @@ interface ChatRequest {
 const mockResponses: Record<string, ChatResponse> = {
   help: {
     chat: "I can help you with various tasks. Try asking me about features, navigation, campaigns, or any specific questions you have!",
-    actions: [],
+    actions: [
+      {
+        type: "OPEN_MODAL",
+        payload: {
+          modalId: "help-modal",
+          data: {
+            title: "Help",
+            content: "I can help you with features, navigation, and campaigns.",
+          },
+        },
+      },
+    ],
   },
   hello: {
     chat: "Hello! I'm your Karta AI Assistant. How can I help you today?",
-    actions: [],
+    actions: [
+      {
+        type: "OPEN_MODAL",
+        payload: {
+          modalId: "quick-actions",
+          data: {
+            title: "Quick Actions",
+            content: "Do you want to create a campaign or view existing ones?",
+          },
+        },
+      },
+    ],
   },
   features: {
     chat: "Karta AI offers AI-powered chat assistance, smart actions, and modal interactions. You can ask me anything and I'll help guide you through the app!",
@@ -66,11 +88,26 @@ const mockResponses: Record<string, ChatResponse> = {
   },
   navigate: {
     chat: "I can help you navigate to different pages. Where would you like to go?",
-    actions: [],
+    actions: [
+      {
+        type: "NAVIGATE",
+        payload: {
+          route: "/campaigns",
+        },
+      },
+    ],
   },
   default: {
-    chat: "Thanks for your message! I'm a mock AI assistant. I can help you with navigation, campaigns, modals, and answer questions about Karta AI. Try asking about 'create campaign', 'features', 'help', or 'hello'!",
-    actions: [],
+    chat: "Do you want to create a campaign or view existing ones?",
+    actions: [
+      {
+        type: "OPEN_MODAL",
+        payload: {
+          modalId: "quick-actions",
+          data: {},
+        },
+      },
+    ],
   },
 };
 

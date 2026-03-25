@@ -10,6 +10,8 @@ interface AIAgentState {
   activeModal: string | null;
   modalData: Record<string, unknown> | null;
   actionQueue: Action[];
+  forms: Record<string, any>;
+  state: Record<string, any>;
 
   // Actions
   addMessage: (message: Message) => void;
@@ -19,6 +21,9 @@ interface AIAgentState {
   clearMessages: () => void;
   addToActionQueue: (action: Action) => void;
   clearActionQueue: () => void;
+  set: (key: string, value: any) => void;
+  setForm: (formId: string, data: any) => void;
+  resetForm: (formId: string) => void;
 }
 
 export const useAIAgentStore = create<AIAgentState>((set) => ({
@@ -28,6 +33,8 @@ export const useAIAgentStore = create<AIAgentState>((set) => ({
   activeModal: null,
   modalData: null,
   actionQueue: [],
+  forms: {},
+  state: {},
 
   addMessage: (message: Message) =>
     set((state) => ({
@@ -63,6 +70,23 @@ export const useAIAgentStore = create<AIAgentState>((set) => ({
   clearActionQueue: () =>
     set({
       actionQueue: [],
+    }),
+
+  set: (key: string, value: any) =>
+    set((state) => ({
+      state: { ...state.state, [key]: value },
+    })),
+
+  setForm: (formId: string, data: any) =>
+    set((state) => ({
+      forms: { ...state.forms, [formId]: data },
+    })),
+
+  resetForm: (formId: string) =>
+    set((state) => {
+      const newForms = { ...state.forms };
+      delete newForms[formId];
+      return { forms: newForms };
     }),
 }));
 
@@ -144,5 +168,8 @@ export const useAIAgent = () => {
     actionQueue: store.actionQueue,
     clearActionQueue: store.clearActionQueue,
     addToActionQueue: store.addToActionQueue,
+    set: store.set,
+    setForm: store.setForm,
+    resetForm: store.resetForm,
   };
 };

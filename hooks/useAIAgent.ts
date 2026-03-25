@@ -2,7 +2,7 @@
 
 import { useAIAgent as useAIAgentStore } from "@/store/useAIAgentStore";
 import { useRouter } from "next/navigation";
-import { processActionQueue } from "@/lib/actionDispatcher";
+import { runActions } from "@/lib/ai/actionDispatcher";
 import { useEffect } from "react";
 
 /**
@@ -16,9 +16,14 @@ export const useAIAgent = () => {
   // Process action queue whenever it updates
   useEffect(() => {
     if (aiAgent.actionQueue.length > 0) {
-      processActionQueue(router);
+      const processActions = async () => {
+        const actions = [...aiAgent.actionQueue];
+        aiAgent.clearActionQueue();
+        await runActions(actions);
+      };
+      processActions();
     }
-  }, [aiAgent.actionQueue, router]);
+  }, [aiAgent.actionQueue, aiAgent]);
 
   return {
     sendMessage: aiAgent.sendMessage,

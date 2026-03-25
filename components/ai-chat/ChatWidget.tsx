@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatWindow } from "./ChatWindow";
+import { Bot } from "lucide-react";
 
 export const ChatWidget = () => {
   const { isOpen, setOpen } = useAIAgent();
@@ -36,37 +37,16 @@ export const ChatWidget = () => {
       )}
 
       {/* Chat button */}
-      <button
-        onClick={handleToggle}
-        className={`flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-gray-900 hover:bg-gray-800 focus:ring-gray-900 text-white`}
-        title={isOpen ? "Close chat" : "Open chat"}
-        aria-label={isOpen ? "Close chat" : "Open chat"}
-      >
-        <svg
-          className={`w-6 h-6 transition-transform duration-300 ${
-            isOpen ? "rotate-45" : "rotate-0"
-          }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      {!isOpen && (
+        <button
+          onClick={handleToggle}
+          className={`flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-gray-900 hover:bg-gray-800 focus:ring-gray-900 text-white animate-in fade-in zoom-in duration-300`}
+          title="Open chat"
+          aria-label="Open chat"
         >
-          {isOpen ? (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 5v14m7-7H5"
-            />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 5v14m7-7H5"
-            />
-          )}
-        </svg>
-      </button>
+          <Bot className="w-6 h-6" />
+        </button>
+      )}
 
       <style jsx>{`
         @keyframes slideUp {

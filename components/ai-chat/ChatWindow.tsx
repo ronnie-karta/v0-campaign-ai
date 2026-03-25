@@ -4,9 +4,10 @@ import { useEffect, useRef } from "react";
 import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
+import { X } from "lucide-react";
 
 export const ChatWindow = () => {
-  const { messages, isLoading } = useAIAgent();
+  const { messages, isLoading, setOpen } = useAIAgent();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom when new messages arrive
@@ -17,12 +18,21 @@ export const ChatWindow = () => {
   return (
     <div className="flex flex-col h-full bg-white rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="bg-gray-900 px-6 py-5 text-white">
-        <h2 className="font-bold text-base tracking-tight">Karta Assistant</h2>
-        <div className="flex items-center gap-2 mt-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
-          <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">System Active</p>
+      <div className="bg-gray-900 px-6 py-5 text-white flex justify-between items-center">
+        <div>
+          <h2 className="font-bold text-base tracking-tight">Karta Assistant</h2>
+          <div className="flex items-center gap-2 mt-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
+            <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">System Active</p>
+          </div>
         </div>
+        <button
+          onClick={() => setOpen(false)}
+          className="p-1 hover:bg-gray-800 rounded-lg transition-colors"
+          aria-label="Close chat"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Messages container */}

@@ -24,19 +24,21 @@ export type Action =
   | { type: "DELETE_ENTITY"; payload: { entity: string; id: string } }
   | { type: "FETCH_DATA"; payload: { entity: string; filters?: any } }
   | { type: "RUN_WORKFLOW"; payload: { workflow: string; data?: any } }
+  | { type: "CONFIRMATION"; payload: { message: string; nextAction: Action } }
   | { type: "REQUEST_CONFIRMATION"; payload: { message: string; nextAction: Action } }
   | { type: "DOWNLOAD_FILE"; payload: { url: string; filename: string } };
 
 // API response format
 export interface ChatResponse {
-  message: string;
-  chat?: string;
-  intent: string;
-  confidence: number;
-  entities: Record<string, any>;
+  mode: "plan" | "complete";
+  chat: string;
   actions?: Action[];
-  mode?: "plan" | "complete";
   steps?: Array<{ id: string; description: string; status: "pending" | "completed" | "current" }>;
+  // Optional legacy fields for backward compatibility if needed, but we'll try to stick to the prompt
+  message?: string;
+  intent?: string;
+  confidence?: number;
+  entities?: Record<string, any>;
 }
 
 // Modal types

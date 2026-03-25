@@ -115,21 +115,47 @@ const {
   "message": "User input text",
   "messages": [
     { "role": "user", "content": "Previous messages..." }
+  ],
+  "context": {
+    "currentPage": "/campaigns/create",
+    "activeForm": "campaignForm",
+    "currentStep": 1,
+    "formData": {}
+  }
+}
+```
+
+**Response (STRICT JSON)**
+
+The system operates in two modes:
+
+#### 1. PLAN MODE
+Used when the AI needs to guide the user through multiple steps.
+```json
+{
+  "mode": "plan",
+  "chat": "I'll guide you through creating a campaign in 3 main steps:",
+  "steps": [
+    { "id": "1", "description": "Set basic info (name, budget)", "status": "pending" },
+    { "id": "2", "description": "Define your audience", "status": "pending" },
+    { "id": "3", "description": "Customize campaign content", "status": "pending" }
+  ],
+  "actions": [
+    { "type": "NAVIGATE", "payload": { "url": "/campaigns/create" } }
   ]
 }
 ```
 
-**Response:**
+#### 2. COMPLETE MODE
+Used for immediate actions or single-turn responses.
 ```json
 {
-  "chat": "Assistant response text",
+  "mode": "complete",
+  "chat": "Opening campaign builder.",
   "actions": [
     {
-      "type": "OPEN_MODAL",
-      "payload": {
-        "modalId": "modal-id",
-        "data": { "title": "...", "content": "..." }
-      }
+      "type": "OPEN_CAMPAIGN",
+      "payload": { "data": {} }
     }
   ]
 }
@@ -142,18 +168,13 @@ The action dispatcher processes actions returned from the API:
 ### Action Types
 
 #### OPEN_MODAL
-Opens a modal with specified data:
+Opens a modal with specified data.
 ```typescript
 {
   type: "OPEN_MODAL",
   payload: {
-    modalId: "unique-id",
-    data: {
-      title: "Modal Title",
-      content: "Modal content",
-      actionText?: "Button text",
-      onAction?: () => void
-    }
+    modal: "modal-id",
+    prefill: { title: "...", content: "..." }
   }
 }
 ```
@@ -164,19 +185,43 @@ Navigates to a route:
 {
   type: "NAVIGATE",
   payload: {
-    path: "/target-route"
+    url: "/target-route"
   }
 }
 ```
 
 #### SET_STATE
-Updates application state:
+Updates application state (e.g., `campaignStep`):
 ```typescript
 {
   type: "SET_STATE",
   payload: {
     key: "state-key",
     value: "new-value"
+  }
+}
+```
+
+#### SET_FORM
+Updates form data (e.g., `campaignForm`):
+```typescript
+{
+  type: "SET_FORM",
+  payload: {
+    formId: "form-id",
+    data: { ... }
+  }
+}
+```
+
+#### CONFIRMATION
+Requests user confirmation before proceeding.
+```typescript
+{
+  type: "CONFIRMATION",
+  payload: {
+    message: "Are you sure?",
+    nextAction: { ... }
   }
 }
 ```

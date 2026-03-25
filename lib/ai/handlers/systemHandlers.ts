@@ -15,6 +15,10 @@ export async function REQUEST_CONFIRMATION(payload: any, context?: ActionContext
   }
 }
 
+export async function CONFIRMATION(payload: any, context?: ActionContext) {
+  return REQUEST_CONFIRMATION(payload, context);
+}
+
 export async function DOWNLOAD_FILE(payload: any, context?: ActionContext) {
   const link = document.createElement("a");
   link.href = payload.url;

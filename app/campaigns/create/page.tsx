@@ -48,11 +48,11 @@ export default function CreateCampaignPage() {
       case 1:
         return !!(campaignData.campaignName && campaignData.campaignType && campaignData.description && campaignData.budget > 0);
       case 2:
+        return campaignData.recipients.length > 0;
+      case 3:
         return !!(campaignData.senderName && campaignData.messageContent && 
           (campaignData.campaignType !== 'email' || campaignData.senderEmail) &&
           (campaignData.campaignType !== 'sms' || campaignData.senderPhone));
-      case 3:
-        return campaignData.recipients.length > 0;
       case 4:
         return !!(campaignData.scheduleType === 'immediate' || campaignData.sendDateTime);
       case 5:
@@ -64,12 +64,12 @@ export default function CreateCampaignPage() {
 
   const handleNext = () => {
     if (isStepValid()) {
-      setCurrentStep(prev => Math.min(prev + 1, STEPS.length));
+      setCurrentStep(Math.min(currentStep + 1, STEPS.length));
     }
   };
 
   const handlePrevious = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
+    setCurrentStep(Math.max(currentStep - 1, 1));
   };
 
   const handleSubmit = () => {

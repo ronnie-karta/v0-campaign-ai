@@ -149,7 +149,7 @@ export const useAIAgent = () => {
       const assistantMessage: Message = {
         id: `msg-${Date.now()}-${Math.random()}`,
         role: "assistant",
-        content: data.chat || data.message,
+        content: data.chat || data.message || "",
         timestamp: Date.now(),
         mode: data.mode,
         steps: data.steps,
@@ -194,5 +194,7 @@ export const useAIAgent = () => {
     set: store.set,
     setForm: store.setForm,
     resetForm: store.resetForm,
+    state: store.state,
+    forms: store.forms,
   };
 };

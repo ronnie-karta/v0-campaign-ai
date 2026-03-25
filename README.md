@@ -8,6 +8,13 @@ This repository is linked to a [v0](https://v0.app) project. You can continue de
 
 [Continue working on v0 →](https://v0.app/chat/projects/prj_47SSE7Ngu8za9bdrzLSHiOLBZYrv)
 
+## AI Documentation
+
+Detailed documentation for the AI chat and campaign integration systems can be found in the `/docs` directory:
+- [AI Chat System Documentation](docs/AI_CHAT_SYSTEM.md)
+- [Campaign Chat Integration](docs/CAMPAIGN_CHAT_INTEGRATION.md)
+- [Campaign Creation System](docs/CAMPAIGN_SYSTEM.md)
+
 ## Getting Started
 
 First, run the development server:

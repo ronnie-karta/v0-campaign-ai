@@ -19,11 +19,11 @@ export const useAIAgent = () => {
       const processActions = async () => {
         const actions = [...aiAgent.actionQueue];
         aiAgent.clearActionQueue();
-        await runActions(actions);
+        await runActions(actions, { router });
       };
       processActions();
     }
-  }, [aiAgent.actionQueue, aiAgent]);
+  }, [aiAgent.actionQueue, aiAgent, router]);
 
   return {
     sendMessage: aiAgent.sendMessage,

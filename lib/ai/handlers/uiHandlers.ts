@@ -1,25 +1,34 @@
 import { useUIStore } from "@/store/useUIStore";
+import { ActionContext } from "../actionDispatcher";
 
-export async function OPEN_MODAL(payload: any) {
+export async function OPEN_MODAL(payload: any, context?: ActionContext) {
   useUIStore.getState().openModal(payload.modalId, payload.data);
 }
 
-export async function CLOSE_MODAL(payload: any) {
+export async function CLOSE_MODAL(payload: any, context?: ActionContext) {
   useUIStore.getState().closeModal(payload.modalId);
 }
 
-export async function NAVIGATE(payload: any) {
-  window.location.href = payload.route;
+export async function NAVIGATE(payload: any, context?: ActionContext) {
+  if (context?.router) {
+    context.router.push(payload.route);
+  } else {
+    window.location.href = payload.route;
+  }
 }
 
-export async function OPEN_CAMPAIGN(payload: any) {
-  window.location.href = "/campaigns/create";
+export async function OPEN_CAMPAIGN(payload: any, context?: ActionContext) {
+  if (context?.router) {
+    context.router.push("/campaigns/create");
+  } else {
+    window.location.href = "/campaigns/create";
+  }
 }
 
-export async function OPEN_DRAWER(payload: any) {
+export async function OPEN_DRAWER(payload: any, context?: ActionContext) {
   useUIStore.getState().openDrawer(payload.drawerId, payload.data);
 }
 
-export async function SHOW_TOAST(payload: any) {
+export async function SHOW_TOAST(payload: any, context?: ActionContext) {
   useUIStore.getState().showToast(payload.message, payload.type);
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { Message, ChatResponse, Action } from "@/lib/types";
 
 interface AIAgentState {
@@ -26,69 +27,83 @@ interface AIAgentState {
   resetForm: (formId: string) => void;
 }
 
-export const useAIAgentStore = create<AIAgentState>((set) => ({
-  messages: [],
-  isLoading: false,
-  isOpen: false,
-  activeModal: null,
-  modalData: null,
-  actionQueue: [],
-  forms: {},
-  state: {},
-
-  addMessage: (message: Message) =>
-    set((state) => ({
-      messages: [...state.messages, message],
-    })),
-
-  setLoading: (loading: boolean) =>
-    set({
-      isLoading: loading,
-    }),
-
-  setOpen: (isOpen: boolean) =>
-    set({
-      isOpen,
-    }),
-
-  setActiveModal: (modalId: string | null, data?: Record<string, unknown>) =>
-    set({
-      activeModal: modalId,
-      modalData: data || null,
-    }),
-
-  clearMessages: () =>
-    set({
+export const useAIAgentStore = create<AIAgentState>()(
+  persist(
+    (set) => ({
       messages: [],
-    }),
-
-  addToActionQueue: (action: Action) =>
-    set((state) => ({
-      actionQueue: [...state.actionQueue, action],
-    })),
-
-  clearActionQueue: () =>
-    set({
+      isLoading: false,
+      isOpen: false,
+      activeModal: null,
+      modalData: null,
       actionQueue: [],
+      forms: {},
+      state: {},
+
+      addMessage: (message: Message) =>
+        set((state) => ({
+          messages: [...state.messages, message],
+        })),
+
+      setLoading: (loading: boolean) =>
+        set({
+          isLoading: loading,
+        }),
+
+      setOpen: (isOpen: boolean) =>
+        set({
+          isOpen,
+        }),
+
+      setActiveModal: (modalId: string | null, data?: Record<string, unknown>) =>
+        set({
+          activeModal: modalId,
+          modalData: data || null,
+        }),
+
+      clearMessages: () =>
+        set({
+          messages: [],
+        }),
+
+      addToActionQueue: (action: Action) =>
+        set((state) => ({
+          actionQueue: [...state.actionQueue, action],
+        })),
+
+      clearActionQueue: () =>
+        set({
+          actionQueue: [],
+        }),
+
+      set: (key: string, value: any) =>
+        set((state) => ({
+          state: { ...state.state, [key]: value },
+        })),
+
+      setForm: (formId: string, data: any) =>
+        set((state) => ({
+          forms: { ...state.forms, [formId]: data },
+        })),
+
+      resetForm: (formId: string) =>
+        set((state) => {
+          const newForms = { ...state.forms };
+          delete newForms[formId];
+          return { forms: newForms };
+        }),
     }),
-
-  set: (key: string, value: any) =>
-    set((state) => ({
-      state: { ...state.state, [key]: value },
-    })),
-
-  setForm: (formId: string, data: any) =>
-    set((state) => ({
-      forms: { ...state.forms, [formId]: data },
-    })),
-
-  resetForm: (formId: string) =>
-    set((state) => {
-      const newForms = { ...state.forms };
-      delete newForms[formId];
-      return { forms: newForms };
-    }),
-}));
+    {
+      name: "ai-agent-storage",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        messages: state.messages,
+        isOpen: state.isOpen,
+        forms: state.forms,
+        state: state.state,
+      }),
+    }
+  )
+);
 
 // Custom hook to expose simplified API
 export const useAIAgent = () => {

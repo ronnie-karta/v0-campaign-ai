@@ -9,6 +9,8 @@ export const ModalManager = () => {
     return null;
   }
 
+  const data = modalData as any;
+
   // Render generic modal
   const handleClose = () => {
     setActiveModal(null);
@@ -25,13 +27,13 @@ export const ModalManager = () => {
       >
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-gray-900">
-            {modalData?.title || "Modal"}
+            {data?.title || "Modal"}
           </h3>
         </div>
 
         <div className="mb-6">
           <p className="text-sm text-gray-600">
-            {modalData?.content || "No content provided"}
+            {data?.content || "No content provided"}
           </p>
         </div>
 
@@ -42,17 +44,17 @@ export const ModalManager = () => {
           >
             Close
           </button>
-          {modalData?.actionText && (
+          {data?.actionText && (
             <button
               onClick={() => {
-                if (modalData?.onAction) {
-                  modalData.onAction();
+                if (data?.onAction) {
+                  data.onAction();
                 }
                 handleClose();
               }}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
             >
-              {modalData.actionText}
+              {data.actionText}
             </button>
           )}
         </div>

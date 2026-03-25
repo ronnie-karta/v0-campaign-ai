@@ -1,18 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatWindow } from "./ChatWindow";
 
 export const ChatWidget = () => {
   const { isOpen, setOpen } = useAIAgent();
   const [isExpanding, setIsExpanding] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleToggle = () => {
     setIsExpanding(true);
     setOpen(!isOpen);
     setTimeout(() => setIsExpanding(false), 300);
   };
+
+  if (!mounted) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 font-sans">

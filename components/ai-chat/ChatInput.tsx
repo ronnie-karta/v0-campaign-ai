@@ -26,22 +26,22 @@ export const ChatInput = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 items-end">
+    <form onSubmit={handleSubmit} className="flex gap-3 items-end p-2 bg-gray-50 rounded-2xl border border-gray-100 focus-within:border-gray-300 focus-within:bg-white transition-all group">
       <input
         ref={inputRef}
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Type a message..."
+        placeholder="Type a command..."
         disabled={isLoading}
-        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-sm resize-none"
+        className="flex-1 px-4 py-3 bg-transparent border-none focus:outline-none disabled:cursor-not-allowed text-sm font-medium placeholder:text-gray-400"
         maxLength={500}
       />
       <button
         type="submit"
         disabled={isLoading || !input.trim()}
-        className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm font-medium whitespace-nowrap flex-shrink-0"
-        title={isLoading ? "Sending..." : !input.trim() ? "Type a message first" : "Send message"}
+        className="px-6 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all text-xs font-bold tracking-widest uppercase flex-shrink-0 active:scale-95"
+        title={isLoading ? "Processing..." : !input.trim() ? "Type a message first" : "Send message"}
       >
         {isLoading ? "..." : "Send"}
       </button>

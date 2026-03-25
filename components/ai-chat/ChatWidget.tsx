@@ -19,7 +19,7 @@ export const ChatWidget = () => {
       {/* Chat window - Responsive */}
       {isOpen && (
         <div
-          className="absolute bottom-20 right-0 w-96 h-[32rem] rounded-lg shadow-2xl bg-white animate-in fade-in zoom-in-95 transition-all duration-300 max-sm:w-[calc(100vw-3rem)] max-sm:h-[calc(100vh-8rem)]"
+          className="absolute bottom-20 right-0 w-96 h-[32rem] rounded-xl shadow-xl bg-white border border-gray-100 animate-in fade-in zoom-in-95 transition-all duration-300 max-sm:w-[calc(100vw-3rem)] max-sm:h-[calc(100vh-8rem)]"
           style={{
             animation: "slideUp 0.3s ease-out",
           }}
@@ -31,11 +31,7 @@ export const ChatWidget = () => {
       {/* Chat button */}
       <button
         onClick={handleToggle}
-        className={`flex items-center justify-center w-14 h-14 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-          isOpen
-            ? "bg-red-500 hover:bg-red-600 focus:ring-red-500"
-            : "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500"
-        } text-white`}
+        className={`flex items-center justify-center w-14 h-14 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-gray-900 hover:bg-gray-800 focus:ring-gray-900 text-white`}
         title={isOpen ? "Close chat" : "Open chat"}
         aria-label={isOpen ? "Close chat" : "Open chat"}
       >
@@ -52,7 +48,7 @@ export const ChatWidget = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
+              d="M12 5v14m7-7H5"
             />
           ) : (
             <path

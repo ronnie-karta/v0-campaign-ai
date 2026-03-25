@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { CampaignData, INITIAL_CAMPAIGN_DATA } from '@/lib/campaign-types';
 import { StepIndicator } from '@/components/campaigns/StepIndicator';
 import { CampaignStep } from '@/components/campaigns/steps/CampaignStep';
@@ -8,7 +9,6 @@ import { CustomiseStep } from '@/components/campaigns/steps/CustomiseStep';
 import { RecipientsStep } from '@/components/campaigns/steps/RecipientsStep';
 import { DeliveryStep } from '@/components/campaigns/steps/DeliveryStep';
 import { PaymentStep } from '@/components/campaigns/steps/PaymentStep';
-import { Button } from '@/components/ui/button';
 
 const STEPS = [
   { id: 1, label: 'campaign', title: 'Campaign', icon: '📦' },
@@ -63,99 +63,118 @@ export default function CreateCampaignPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="min-h-screen bg-white text-gray-900 selection:bg-gray-200">
+      <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
+        <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-900 text-white font-bold transition-transform group-hover:scale-105">
+              K
+            </div>
+            <span className="text-lg font-bold tracking-tight">Karta AI</span>
+          </Link>
+          <Link href="/campaigns" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
+            Exit Builder
+          </Link>
+        </nav>
+      </header>
+
+      <main className="max-w-4xl mx-auto px-6 py-20">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Create Campaign</h1>
-          <p className="text-gray-600">Set up your marketing campaign step by step</p>
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold tracking-tight mb-4">Campaign Builder</h1>
+          <p className="text-gray-500 max-w-lg mx-auto">
+            Refine your message and reach your audience with absolute precision.
+          </p>
         </div>
 
         {/* Step Indicator */}
-        <StepIndicator steps={STEPS} currentStep={currentStep} />
+        <div className="mb-16">
+          <StepIndicator steps={STEPS} currentStep={currentStep} />
+        </div>
 
         {/* Form Container */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 mb-12">
           {/* Step 1: Campaign */}
           {currentStep === 1 && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Campaign Details</h2>
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <h2 className="text-2xl font-bold tracking-tight mb-8">1. Identity & Goals</h2>
               <CampaignStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
           {/* Step 2: Customise */}
           {currentStep === 2 && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Customise Your Message</h2>
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <h2 className="text-2xl font-bold tracking-tight mb-8">2. Creative Content</h2>
               <CustomiseStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
           {/* Step 3: Recipients */}
           {currentStep === 3 && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Add Recipients</h2>
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <h2 className="text-2xl font-bold tracking-tight mb-8">3. Target Audience</h2>
               <RecipientsStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
           {/* Step 4: Delivery */}
           {currentStep === 4 && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Schedule Delivery</h2>
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <h2 className="text-2xl font-bold tracking-tight mb-8">4. Logistics</h2>
               <DeliveryStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
           {/* Step 5: Payment */}
           {currentStep === 5 && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Review & Payment</h2>
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <h2 className="text-2xl font-bold tracking-tight mb-8">5. Final Review</h2>
               <PaymentStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
           {/* Navigation Buttons */}
-          <div className="mt-12 flex justify-between items-center pt-8 border-t">
-            <Button
-              variant="outline"
+          <div className="mt-16 flex justify-between items-center pt-10 border-t border-gray-50">
+            <button
               onClick={handlePrevious}
               disabled={currentStep === 1}
-              className="px-8"
+              className="px-8 py-3 rounded-xl border border-gray-200 text-sm font-bold tracking-widest uppercase hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
-              Back
-            </Button>
+              Previous
+            </button>
 
-            <div className="text-sm text-gray-600">
-              Step {currentStep} of {STEPS.length}
+            <div className="text-[10px] font-bold tracking-widest uppercase text-gray-400">
+              Phase {currentStep} of {STEPS.length}
             </div>
 
             {currentStep === STEPS.length ? (
-              <Button
+              <button
                 onClick={handleSubmit}
                 disabled={!isStepValid()}
-                className="px-8 bg-purple-600 hover:bg-purple-700"
+                className="px-10 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold tracking-widest uppercase hover:bg-gray-800 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-all active:scale-95"
               >
-                Create Campaign
-              </Button>
+                Submit
+              </button>
             ) : (
-              <Button
+              <button
                 onClick={handleNext}
                 disabled={!isStepValid()}
-                className="px-8 bg-purple-600 hover:bg-purple-700"
+                className="px-10 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold tracking-widest uppercase hover:bg-gray-800 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-all active:scale-95"
               >
                 Next
-              </Button>
+              </button>
             )}
           </div>
         </div>
 
         {/* Progress Info */}
-        <div className="text-center text-sm text-gray-600">
-          Progress: {Math.round((currentStep / STEPS.length) * 100)}%
+        <div className="flex items-center justify-center gap-4 text-[10px] font-bold tracking-widest uppercase text-gray-300">
+          <div className="h-[1px] w-12 bg-gray-100"></div>
+          <span>Progress {Math.round((currentStep / STEPS.length) * 100)}%</span>
+          <div className="h-[1px] w-12 bg-gray-100"></div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatWindow } from "./ChatWindow";
-import { Bot } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export const ChatWidget = () => {
   const { isOpen, setOpen } = useAIAgent();
@@ -44,7 +44,7 @@ export const ChatWidget = () => {
           title="Open chat"
           aria-label="Open chat"
         >
-          <Bot className="w-6 h-6" />
+          <Sparkles className="w-6 h-6" />
         </button>
       )}
 

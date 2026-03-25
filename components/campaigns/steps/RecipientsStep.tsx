@@ -5,6 +5,14 @@ import { CampaignData, Recipient } from '@/lib/campaign-types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { downloadExampleCSV, parseCSV } from '@/lib/csv-utils';
 
 interface RecipientsStepProps {
@@ -169,22 +177,42 @@ export const RecipientsStep = ({ data, onChange }: RecipientsStepProps) => {
             Recipients ({data.recipients.length})
           </Label>
 
-          <div className="space-y-2 max-h-64 overflow-y-auto">
-            {data.recipients.map((recipient) => (
-              <div key={recipient.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">{recipient.name || 'Unnamed'}</p>
-                  {recipient.email && <p className="text-sm text-gray-600">{recipient.email}</p>}
-                  {recipient.phone && <p className="text-sm text-gray-600">{recipient.phone}</p>}
-                </div>
-                <button
-                  onClick={() => removeRecipient(recipient.id)}
-                  className="text-gray-400 hover:text-red-500 transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
+          <div className="border rounded-xl overflow-hidden">
+            <div className="max-h-64 overflow-y-auto">
+              <Table>
+                <TableHeader className="bg-gray-50 sticky top-0 z-10">
+                  <TableRow>
+                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Name</TableHead>
+                    <TableHead className="font-bold text-[10px] uppercase tracking-wider">Contact Information</TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.recipients.map((recipient) => (
+                    <TableRow key={recipient.id}>
+                      <TableCell className="font-medium text-gray-900">
+                        {recipient.name || <span className="text-gray-400 italic">Unnamed</span>}
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm text-gray-600">
+                          {recipient.email && <div>{recipient.email}</div>}
+                          {recipient.phone && <div>{recipient.phone}</div>}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <button
+                          onClick={() => removeRecipient(recipient.id)}
+                          className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                          aria-label="Remove recipient"
+                        >
+                          ✕
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
       )}

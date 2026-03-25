@@ -55,11 +55,11 @@ export const PaymentStep = ({ data, onChange }: PaymentStepProps) => {
             Campaign Preview
           </h3>
 
-          <div className="space-y-8">
+          <div className="space-y-12">
             {/* Identity */}
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-              <h4 className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mb-4">Identity & Goals</h4>
-              <div className="grid grid-cols-2 gap-y-4 text-sm">
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Identity & Goals</h4>
+              <div className="grid grid-cols-2 gap-y-6 text-sm">
                 <div>
                   <p className="text-gray-500 mb-1">Name</p>
                   <p className="font-semibold">{data.campaignName}</p>
@@ -76,9 +76,9 @@ export const PaymentStep = ({ data, onChange }: PaymentStepProps) => {
             </div>
 
             {/* Creative */}
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-              <h4 className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mb-4">Creative Content</h4>
-              <div className="space-y-4 text-sm">
+            <div className="space-y-4 border-t border-gray-100 pt-8">
+              <h4 className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Creative Content</h4>
+              <div className="space-y-6 text-sm">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-500 mb-1">Sender</p>
@@ -93,7 +93,7 @@ export const PaymentStep = ({ data, onChange }: PaymentStepProps) => {
                 </div>
                 <div>
                   <p className="text-gray-500 mb-1">Message Preview</p>
-                  <div className="p-4 bg-white border border-gray-100 rounded-lg text-gray-600 italic">
+                  <div className="p-4 bg-gray-50 border border-gray-100 rounded-lg text-gray-600 italic">
                     "{data.messageContent}"
                   </div>
                 </div>
@@ -101,9 +101,9 @@ export const PaymentStep = ({ data, onChange }: PaymentStepProps) => {
             </div>
 
             {/* Logistics */}
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-              <h4 className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mb-4">Logistics</h4>
-              <div className="grid grid-cols-2 gap-y-4 text-sm">
+            <div className="space-y-4 border-t border-gray-100 pt-8">
+              <h4 className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Logistics</h4>
+              <div className="grid grid-cols-2 gap-y-6 text-sm">
                 <div>
                   <p className="text-gray-500 mb-1">Schedule</p>
                   <p className="font-semibold capitalize">{data.scheduleType}</p>

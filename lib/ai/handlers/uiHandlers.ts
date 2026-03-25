@@ -2,7 +2,9 @@ import { useUIStore } from "@/store/useUIStore";
 import { ActionContext } from "../actionDispatcher";
 
 export async function OPEN_MODAL(payload: any, context?: ActionContext) {
-  useUIStore.getState().openModal(payload.modal, payload.prefill);
+  const modalId = payload.modalId || payload.modal;
+  const data = payload.data || payload.prefill;
+  useUIStore.getState().openModal(modalId, data);
 }
 
 export async function CLOSE_MODAL(payload: any, context?: ActionContext) {

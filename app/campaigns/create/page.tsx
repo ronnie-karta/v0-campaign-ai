@@ -13,8 +13,8 @@ import { useAIAgent } from '@/hooks/useAIAgent';
 
 const STEPS = [
   { id: 1, label: 'campaign', title: 'Campaign', icon: '📦' },
-  { id: 2, label: 'recipients', title: 'Recipients', icon: '👥' },
-  { id: 3, label: 'customise', title: 'Customise', icon: '✏️' },
+  { id: 2, label: 'customise', title: 'Customise', icon: '✏️' },
+  { id: 3, label: 'recipients', title: 'Recipients', icon: '👥' },
   { id: 4, label: 'delivery', title: 'Delivery', icon: '✈️' },
   { id: 5, label: 'payment', title: 'Payment', icon: '💳' },
 ];
@@ -105,19 +105,19 @@ export default function CreateCampaignPage() {
             </div>
           )}
 
-          {/* Step 2: Recipients */}
+          {/* Step 2: Customise */}
           {currentStep === 2 && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <h2 className="text-2xl font-bold tracking-tight mb-8">2. Target Audience</h2>
-              <RecipientsStep data={campaignData} onChange={handleDataChange} />
+              <h2 className="text-2xl font-bold tracking-tight mb-8">2. Creative Content</h2>
+              <CustomiseStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
-          {/* Step 3: Customise */}
+          {/* Step 3: Recipients */}
           {currentStep === 3 && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <h2 className="text-2xl font-bold tracking-tight mb-8">3. Creative Content</h2>
-              <CustomiseStep data={campaignData} onChange={handleDataChange} />
+              <h2 className="text-2xl font-bold tracking-tight mb-8">3. Target Audience</h2>
+              <RecipientsStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 

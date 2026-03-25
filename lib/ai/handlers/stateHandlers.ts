@@ -6,7 +6,8 @@ export async function SET_STATE(payload: any, context?: ActionContext) {
 }
 
 export async function SET_FORM(payload: any, context?: ActionContext) {
-  useAIAgentStore.getState().setForm(payload.formId, payload.data);
+  const currentData = useAIAgentStore.getState().forms[payload.formId] || {};
+  useAIAgentStore.getState().setForm(payload.formId, { ...currentData, ...payload.data });
 }
 
 export async function RESET_FORM(payload: any, context?: ActionContext) {

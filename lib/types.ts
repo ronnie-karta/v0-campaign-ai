@@ -4,6 +4,8 @@ export interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: number;
+  mode?: "plan" | "complete";
+  steps?: Array<{ id: string; description: string; status: "pending" | "completed" | "current" }>;
 }
 
 // Action types for extensible action system
@@ -28,10 +30,13 @@ export type Action =
 // API response format
 export interface ChatResponse {
   message: string;
+  chat?: string;
   intent: string;
   confidence: number;
   entities: Record<string, any>;
   actions?: Action[];
+  mode?: "plan" | "complete";
+  steps?: Array<{ id: string; description: string; status: "pending" | "completed" | "current" }>;
 }
 
 // Modal types

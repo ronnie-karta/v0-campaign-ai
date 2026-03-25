@@ -130,6 +130,12 @@ export const useAIAgent = () => {
         body: JSON.stringify({
           message: text,
           messages: store.messages,
+          context: {
+            currentPage: window.location.pathname,
+            activeForm: "campaignForm",
+            currentStep: store.state.campaignStep || 1,
+            formData: store.forms.campaignForm || {},
+          },
         }),
       });
 
@@ -143,8 +149,10 @@ export const useAIAgent = () => {
       const assistantMessage: Message = {
         id: `msg-${Date.now()}-${Math.random()}`,
         role: "assistant",
-        content: data.message,
+        content: data.chat || data.message,
         timestamp: Date.now(),
+        mode: data.mode,
+        steps: data.steps,
       };
 
       store.addMessage(assistantMessage);

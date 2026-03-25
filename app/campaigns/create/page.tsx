@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CampaignData, INITIAL_CAMPAIGN_DATA } from '@/lib/campaign-types';
 import { StepIndicator } from '@/components/campaigns/StepIndicator';
@@ -9,21 +9,38 @@ import { CustomiseStep } from '@/components/campaigns/steps/CustomiseStep';
 import { RecipientsStep } from '@/components/campaigns/steps/RecipientsStep';
 import { DeliveryStep } from '@/components/campaigns/steps/DeliveryStep';
 import { PaymentStep } from '@/components/campaigns/steps/PaymentStep';
+import { useAIAgent } from '@/hooks/useAIAgent';
 
 const STEPS = [
   { id: 1, label: 'campaign', title: 'Campaign', icon: '📦' },
-  { id: 2, label: 'customise', title: 'Customise', icon: '✏️' },
-  { id: 3, label: 'recipients', title: 'Recipients', icon: '👥' },
+  { id: 2, label: 'recipients', title: 'Recipients', icon: '👥' },
+  { id: 3, label: 'customise', title: 'Customise', icon: '✏️' },
   { id: 4, label: 'delivery', title: 'Delivery', icon: '✈️' },
   { id: 5, label: 'payment', title: 'Payment', icon: '💳' },
 ];
 
 export default function CreateCampaignPage() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [campaignData, setCampaignData] = useState<CampaignData>(INITIAL_CAMPAIGN_DATA);
+  const { state = {}, forms = {}, set, setForm } = useAIAgent();
+
+  const currentStep = state.campaignStep || 1;
+  const campaignData = (forms.campaignForm as CampaignData) || INITIAL_CAMPAIGN_DATA;
+
+  // Sync state if empty
+  useEffect(() => {
+    if (!state.campaignStep) {
+      set('campaignStep', 1);
+    }
+    if (!forms.campaignForm) {
+      setForm('campaignForm', INITIAL_CAMPAIGN_DATA);
+    }
+  }, [state.campaignStep, forms.campaignForm, set, setForm]);
+
+  const setCurrentStep = (step: number) => {
+    set('campaignStep', step);
+  };
 
   const handleDataChange = (updates: Partial<CampaignData>) => {
-    setCampaignData(prev => ({ ...prev, ...updates }));
+    setForm('campaignForm', { ...campaignData, ...updates });
   };
 
   const isStepValid = (): boolean => {
@@ -88,19 +105,19 @@ export default function CreateCampaignPage() {
             </div>
           )}
 
-          {/* Step 2: Customise */}
+          {/* Step 2: Recipients */}
           {currentStep === 2 && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <h2 className="text-2xl font-bold tracking-tight mb-8">2. Creative Content</h2>
-              <CustomiseStep data={campaignData} onChange={handleDataChange} />
+              <h2 className="text-2xl font-bold tracking-tight mb-8">2. Target Audience</h2>
+              <RecipientsStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
-          {/* Step 3: Recipients */}
+          {/* Step 3: Customise */}
           {currentStep === 3 && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <h2 className="text-2xl font-bold tracking-tight mb-8">3. Target Audience</h2>
-              <RecipientsStep data={campaignData} onChange={handleDataChange} />
+              <h2 className="text-2xl font-bold tracking-tight mb-8">3. Creative Content</h2>
+              <CustomiseStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 

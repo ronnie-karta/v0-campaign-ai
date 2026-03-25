@@ -34,5 +34,10 @@ export const useAIAgent = () => {
     activeModal: aiAgent.activeModal,
     modalData: aiAgent.modalData,
     setActiveModal: aiAgent.setActiveModal,
+    state: aiAgent.state,
+    forms: aiAgent.forms,
+    set: aiAgent.set,
+    setForm: aiAgent.setForm,
+    resetForm: aiAgent.resetForm,
   };
 };

@@ -8,8 +8,8 @@ interface ChatMessageProps {
 
 export const ChatMessage = ({ message }: ChatMessageProps) => {
   const isUser = message.role === "user";
-  const isError = message.content.toLowerCase().includes("error") ||
-    message.content.toLowerCase().includes("sorry");
+  const isError = message.content?.toLowerCase().includes("error") ||
+    message.content?.toLowerCase().includes("sorry");
 
   return (
     <div
@@ -27,6 +27,35 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
         <p className="text-sm leading-relaxed break-words whitespace-pre-wrap font-medium">
           {message.content}
         </p>
+
+        {message.mode === "plan" && message.steps && (
+          <div className="mt-4 pt-4 border-t border-gray-200/50 space-y-3">
+            {message.steps.map((step) => (
+              <div key={step.id} className="flex items-center gap-3">
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    step.status === "completed"
+                      ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"
+                      : step.status === "current"
+                        ? "bg-blue-500 animate-pulse"
+                        : "bg-gray-300"
+                  }`}
+                />
+                <span
+                  className={`text-xs font-bold tracking-tight ${
+                    step.status === "completed"
+                      ? "text-gray-500 line-through decoration-gray-400"
+                      : step.status === "current"
+                        ? "text-gray-900"
+                        : "text-gray-400"
+                  }`}
+                >
+                  {step.description}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-2 mt-3 opacity-40">
           <div className={`w-1 h-1 rounded-full ${isUser ? 'bg-white' : 'bg-gray-900'}`}></div>
           <span className="text-[10px] font-bold tracking-widest uppercase">

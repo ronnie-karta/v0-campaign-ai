@@ -32,21 +32,7 @@ export default function CampaignsPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 selection:bg-gray-200">
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-900 text-white font-bold transition-transform group-hover:scale-105">
-              K
-            </div>
-            <span className="text-lg font-bold tracking-tight">Karta AI</span>
-          </Link>
-          <Link href="/" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
-            Back to Home
-          </Link>
-        </nav>
-      </header>
-
-      <main className="max-w-6xl mx-auto px-6 py-20">
+      <main className="max-w-6xl mx-auto px-6 py-32">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>

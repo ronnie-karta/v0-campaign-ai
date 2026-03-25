@@ -13,7 +13,7 @@ export async function NAVIGATE(payload: any) {
 }
 
 export async function OPEN_CAMPAIGN(payload: any) {
-  useUIStore.getState().openCampaign(payload.data);
+  window.location.href = "/campaigns/create";
 }
 
 export async function OPEN_DRAWER(payload: any) {

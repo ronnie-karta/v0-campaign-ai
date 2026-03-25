@@ -57,9 +57,9 @@ const mockResponses: Record<string, ChatResponse> = {
     chat: "I'll help you create a new email or SMS campaign. Let me open the campaign creation wizard for you.",
     actions: [
       {
-        type: "OPEN_CAMPAIGN",
+        type: "NAVIGATE",
         payload: {
-          data: {},
+          route: "/campaigns/create",
         },
       },
     ],
@@ -68,9 +68,9 @@ const mockResponses: Record<string, ChatResponse> = {
     chat: "Great! Let's create a new campaign. I'm opening the campaign builder for you. You can set up your email or SMS campaign in just 5 simple steps.",
     actions: [
       {
-        type: "OPEN_CAMPAIGN",
+        type: "NAVIGATE",
         payload: {
-          data: {},
+          route: "/campaigns/create",
         },
       },
     ],
@@ -79,9 +79,9 @@ const mockResponses: Record<string, ChatResponse> = {
     chat: "Perfect! I'm launching the campaign creation wizard. You'll be able to configure your message, recipients, delivery schedule, and payment in a guided workflow.",
     actions: [
       {
-        type: "OPEN_CAMPAIGN",
+        type: "NAVIGATE",
         payload: {
-          data: {},
+          route: "/campaigns/create",
         },
       },
     ],

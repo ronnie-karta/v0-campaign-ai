@@ -7,13 +7,16 @@ interface ChatRequest {
 
 const mockResponses: Record<string, ChatResponse> = {
   help: {
-    chat: "I can help you with various tasks. Try asking me about features, navigation, campaigns, or any specific questions you have!",
+    message: "I can help you with various tasks. Try asking me about features, navigation, campaigns, or any specific questions you have!",
+    intent: "GET_HELP",
+    confidence: 0.95,
+    entities: {},
     actions: [
       {
         type: "OPEN_MODAL",
         payload: {
-          modalId: "help-modal",
-          data: {
+          modal: "help-modal",
+          prefill: {
             title: "Help",
             content: "I can help you with features, navigation, and campaigns.",
           },
@@ -22,13 +25,16 @@ const mockResponses: Record<string, ChatResponse> = {
     ],
   },
   hello: {
-    chat: "Hello! I'm your Karta AI Assistant. How can I help you today?",
+    message: "Hello! I'm your Karta AI Assistant. How can I help you today?",
+    intent: "GREETING",
+    confidence: 1.0,
+    entities: {},
     actions: [
       {
         type: "OPEN_MODAL",
         payload: {
-          modalId: "quick-actions",
-          data: {
+          modal: "quick-actions",
+          prefill: {
             title: "Quick Actions",
             content: "Do you want to create a campaign or view existing ones?",
           },
@@ -37,13 +43,16 @@ const mockResponses: Record<string, ChatResponse> = {
     ],
   },
   features: {
-    chat: "Karta AI offers AI-powered chat assistance, smart actions, and modal interactions. You can ask me anything and I'll help guide you through the app!",
+    message: "Karta AI offers AI-powered chat assistance, smart actions, and modal interactions. You can ask me anything and I'll help guide you through the app!",
+    intent: "GET_FEATURES",
+    confidence: 0.9,
+    entities: {},
     actions: [
       {
         type: "OPEN_MODAL",
         payload: {
-          modalId: "features-modal",
-          data: {
+          modal: "features-modal",
+          prefill: {
             title: "Features",
             content:
               "Karta AI includes: Real-time chat assistance, Action dispatching system, Global state management, and extensible architecture.",
@@ -54,57 +63,74 @@ const mockResponses: Record<string, ChatResponse> = {
     ],
   },
   campaign: {
-    chat: "I'll help you create a new email or SMS campaign. Let me open the campaign creation wizard for you.",
+    message: "I'll help you create a new email or SMS campaign. Let me open the campaign creation wizard for you.",
+    intent: "CREATE_CAMPAIGN",
+    confidence: 0.85,
+    entities: {},
     actions: [
       {
         type: "NAVIGATE",
         payload: {
-          route: "/campaigns/create",
+          url: "/campaigns/create",
         },
       },
     ],
   },
   "create campaign": {
-    chat: "Great! Let's create a new campaign. I'm opening the campaign builder for you. You can set up your email or SMS campaign in just 5 simple steps.",
+    message: "Great! Let's create a new campaign. I'm opening the campaign builder for you. You can set up your email or SMS campaign in just 5 simple steps.",
+    intent: "CREATE_CAMPAIGN",
+    confidence: 1.0,
+    entities: {},
     actions: [
       {
         type: "NAVIGATE",
         payload: {
-          route: "/campaigns/create",
+          url: "/campaigns/create",
         },
       },
     ],
   },
   "new campaign": {
-    chat: "Perfect! I'm launching the campaign creation wizard. You'll be able to configure your message, recipients, delivery schedule, and payment in a guided workflow.",
+    message: "Perfect! I'm launching the campaign creation wizard. You'll be able to configure your message, recipients, delivery schedule, and payment in a guided workflow.",
+    intent: "CREATE_CAMPAIGN",
+    confidence: 1.0,
+    entities: {},
     actions: [
       {
         type: "NAVIGATE",
         payload: {
-          route: "/campaigns/create",
+          url: "/campaigns/create",
         },
       },
     ],
   },
   navigate: {
-    chat: "I can help you navigate to different pages. Where would you like to go?",
+    message: "I can help you navigate to different pages. Where would you like to go?",
+    intent: "NAVIGATE",
+    confidence: 0.8,
+    entities: {
+      target: "campaigns"
+    },
     actions: [
       {
         type: "NAVIGATE",
         payload: {
-          route: "/campaigns",
+          url: "/campaigns",
         },
       },
     ],
   },
   default: {
-    chat: "Do you want to create a campaign or view existing ones?",
+    message: "Do you want to create a campaign or view existing ones?",
+    intent: "UNKNOWN",
+    confidence: 0.5,
+    entities: {},
     actions: [
       {
         type: "OPEN_MODAL",
         payload: {
-          modalId: "quick-actions",
-          data: {},
+          modal: "quick-actions",
+          prefill: {},
         },
       },
     ],

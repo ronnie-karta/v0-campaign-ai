@@ -7,11 +7,11 @@ export async function RUN_WORKFLOW(payload: any, context?: ActionContext) {
   });
 }
 
-export async function CONFIRMATION(payload: any, context?: ActionContext) {
+export async function REQUEST_CONFIRMATION(payload: any, context?: ActionContext) {
   const confirmed = window.confirm(payload.message);
 
   if (confirmed) {
-    await runActions([payload.confirmAction], context);
+    await runActions([payload.nextAction], context);
   }
 }
 

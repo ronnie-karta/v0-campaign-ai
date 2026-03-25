@@ -143,7 +143,7 @@ export const useAIAgent = () => {
       const assistantMessage: Message = {
         id: `msg-${Date.now()}-${Math.random()}`,
         role: "assistant",
-        content: data.chat,
+        content: data.message,
         timestamp: Date.now(),
       };
 

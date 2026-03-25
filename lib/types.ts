@@ -8,9 +8,9 @@ export interface Message {
 
 // Action types for extensible action system
 export type Action =
-  | { type: "OPEN_MODAL"; payload: { modalId: string; data?: any } }
+  | { type: "OPEN_MODAL"; payload: { modal: string; prefill?: any } }
   | { type: "CLOSE_MODAL"; payload: { modalId: string } }
-  | { type: "NAVIGATE"; payload: { route: string } }
+  | { type: "NAVIGATE"; payload: { url: string; prefill?: any } }
   | { type: "OPEN_CAMPAIGN"; payload: { data?: any } }
   | { type: "OPEN_DRAWER"; payload: { drawerId: string; data?: any } }
   | { type: "SHOW_TOAST"; payload: { message: string; type: "success" | "error" | "info" } }
@@ -22,12 +22,15 @@ export type Action =
   | { type: "DELETE_ENTITY"; payload: { entity: string; id: string } }
   | { type: "FETCH_DATA"; payload: { entity: string; filters?: any } }
   | { type: "RUN_WORKFLOW"; payload: { workflow: string; data?: any } }
-  | { type: "CONFIRMATION"; payload: { message: string; confirmAction: Action } }
+  | { type: "REQUEST_CONFIRMATION"; payload: { message: string; nextAction: Action } }
   | { type: "DOWNLOAD_FILE"; payload: { url: string; filename: string } };
 
 // API response format
 export interface ChatResponse {
-  chat: string;
+  message: string;
+  intent: string;
+  confidence: number;
+  entities: Record<string, any>;
   actions?: Action[];
 }
 

@@ -2,7 +2,7 @@ import { useUIStore } from "@/store/useUIStore";
 import { ActionContext } from "../actionDispatcher";
 
 export async function OPEN_MODAL(payload: any, context?: ActionContext) {
-  useUIStore.getState().openModal(payload.modalId, payload.data);
+  useUIStore.getState().openModal(payload.modal, payload.prefill);
 }
 
 export async function CLOSE_MODAL(payload: any, context?: ActionContext) {
@@ -10,10 +10,11 @@ export async function CLOSE_MODAL(payload: any, context?: ActionContext) {
 }
 
 export async function NAVIGATE(payload: any, context?: ActionContext) {
+  const url = payload.url;
   if (context?.router) {
-    context.router.push(payload.route);
+    context.router.push(url);
   } else {
-    window.location.href = payload.route;
+    window.location.href = url;
   }
 }
 

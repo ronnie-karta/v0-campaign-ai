@@ -27,7 +27,7 @@ export const ChatWidget = () => {
       {/* Chat window - Responsive */}
       {isOpen && (
         <div
-          className="absolute bottom-20 right-0 w-96 h-[32rem] rounded-xl shadow-xl bg-white border border-gray-100 animate-in fade-in zoom-in-95 transition-all duration-300 max-sm:w-[calc(100vw-3rem)] max-sm:h-[calc(100vh-8rem)]"
+          className="absolute bottom-0 right-0 w-96 h-[32rem] rounded-xl shadow-xl bg-white border border-gray-100 animate-in fade-in zoom-in-95 transition-all duration-300 max-sm:w-[calc(100vw-3rem)] max-sm:h-[calc(100vh-8rem)]"
           style={{
             animation: "slideUp 0.3s ease-out",
           }}

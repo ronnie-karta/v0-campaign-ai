@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatWindow } from "./ChatWindow";
-import { Bot } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export const ChatWidget = () => {
   const { isOpen, setOpen } = useAIAgent();
@@ -27,7 +27,7 @@ export const ChatWidget = () => {
       {/* Chat window - Responsive */}
       {isOpen && (
         <div
-          className="absolute bottom-20 right-0 w-96 h-[32rem] rounded-xl shadow-xl bg-white border border-gray-100 animate-in fade-in zoom-in-95 transition-all duration-300 max-sm:w-[calc(100vw-3rem)] max-sm:h-[calc(100vh-8rem)]"
+          className="absolute bottom-0 right-0 w-96 h-[32rem] rounded-xl shadow-xl bg-white border border-gray-100 animate-in fade-in zoom-in-95 transition-all duration-300 max-sm:w-[calc(100vw-3rem)] max-sm:h-[calc(100vh-8rem)]"
           style={{
             animation: "slideUp 0.3s ease-out",
           }}
@@ -44,7 +44,7 @@ export const ChatWidget = () => {
           title="Open chat"
           aria-label="Open chat"
         >
-          <Bot className="w-6 h-6" />
+          <Sparkles className="w-6 h-6" />
         </button>
       )}
 

@@ -27,18 +27,38 @@ export async function POST(request: Request): Promise<Response> {
     let identified = false;
 
     // --- STEP 1: CAMPAIGN ---
-    const campaignMatch = message.match(/create\s+(?:a\s+)?(?:new\s+)?campaign\s+(.+)/i) ||
-                         message.match(/set\s+campaign\s+name\s+to\s+(.+)/i) ||
-                         message.match(/(?:create\s+)?([a-zA-Z0-9\s]+)\s+campaign/i);
+    // Improved extraction logic
+    const budgetMatch = message.match(/budget\s*(?:\$|usd)?\s*(\d+(?:[.,]\d+)?)/i);
+    const typeMatch = message.match(/\b(email|sms|both)\b/i);
+
+    let campaignName = "";
+    const nameMatch = message.match(/(?:create|new)\s+(?:a\s+)?(?:new\s+)?(?:email|sms|both)?\s*campaign\s+(?:for\s+|called\s+)?(.+?)(?:\s+with|\s+budget|\s*$)/i) ||
+                     message.match(/set\s+campaign\s+name\s+to\s+(.+)/i) ||
+                     message.match(/(.+)\s+campaign/i);
+
+    if (nameMatch) {
+      campaignName = nameMatch[1].trim();
+      // Remove "for " or "called " if it was captured at the start
+      campaignName = campaignName.replace(/^(for|called)\s+/i, "");
+      // Prevent capturing common words as campaign names
+      const lowerName = campaignName.toLowerCase();
+      if (lowerName === "new email" || lowerName === "new sms" || lowerName === "new") {
+        campaignName = "";
+      }
+    }
 
     // Explicitly check if the message is ONLY "create campaign" or similar
     const isGenericCreate = messageLower === "create campaign" ||
                            messageLower === "create a campaign" ||
                            messageLower === "create a new campaign" ||
-                           messageLower === "new campaign";
+                           messageLower === "new campaign" ||
+                           (messageLower.includes("create") && messageLower.includes("campaign") && !campaignName);
 
-    if (campaignMatch && !isGenericCreate) {
-      const name = toProperCase(campaignMatch[1].trim());
+    if ((nameMatch || budgetMatch || typeMatch) && !isGenericCreate) {
+      const name = campaignName ? toProperCase(campaignName) : "";
+      const budget = budgetMatch ? parseFloat(budgetMatch[1].replace(",", "")) : undefined;
+      const type = typeMatch ? typeMatch[1].toLowerCase() : undefined;
+
       chatResponse = "Got it. Let's set up your campaign.";
 
       if (!isCampaignPage) {
@@ -49,11 +69,20 @@ export async function POST(request: Request): Promise<Response> {
         type: "SET_STATE",
         payload: { key: "campaignStep", value: 1 }
       });
+
+      const formData: any = {};
+      if (name) {
+        formData.name = name;
+        formData.campaignName = name;
+      }
+      if (budget) formData.budget = budget;
+      if (type) formData.campaignType = type;
+
       actions.push({
         type: "SET_FORM",
         payload: {
           formId: "campaignForm",
-          data: { name }
+          data: formData
         }
       });
       identified = true;

@@ -81,6 +81,85 @@ export default function Home() {
           </div>
         </section>
 
+        {/* AI Commands Section */}
+        <section className="py-24 max-w-6xl mx-auto px-6 border-t border-gray-100">
+          <div className="flex flex-col md:flex-row gap-16">
+            <div className="md:w-1/3 space-y-6">
+              <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400">Interface</div>
+              <h2 className="text-4xl font-bold tracking-tight text-gray-900 leading-[1.1]">
+                Command the system with natural language.
+              </h2>
+              <p className="text-gray-500 leading-relaxed">
+                Jules, your Karta AI assistant, translates your intent directly into professional UI actions. 
+                Try these commands in the chat widget to experience high-scale automation.
+              </p>
+              <div className="pt-4">
+                <Link 
+                  href="/campaigns/create"
+                  className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm text-sm"
+                >
+                  Start Campaign
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                  </svg>
+                </Link>
+              </div>
+            </div>
+
+            <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                { 
+                  category: 'Campaign Creation', 
+                  commands: [
+                    'create campaign for Nike budget 5000',
+                    'Adidas campaign budget 3000'
+                  ]
+                },
+                { 
+                  category: 'Audience & Content', 
+                  commands: [
+                    'send to 200 users',
+                    'set message promo sale 50% off'
+                  ]
+                },
+                { 
+                  category: 'Scheduling & Delivery', 
+                  commands: [
+                    'schedule tomorrow',
+                    'deliver on 2026-03-26'
+                  ]
+                },
+                { 
+                  category: 'System & Navigation', 
+                  commands: [
+                    'help',
+                    'navigate to campaigns',
+                    'hello'
+                  ]
+                }
+              ].map((group, i) => (
+                <div key={i} className="p-6 rounded-xl border border-gray-100 bg-gray-50/50 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400">{group.category}</h4>
+                  <div className="space-y-2">
+                    {group.commands.map((cmd, j) => (
+                      <div key={j} className="flex items-center gap-2 group cursor-pointer">
+                        <code className="text-[13px] bg-white border border-gray-200 px-3 py-1.5 rounded-md text-gray-700 font-mono flex-1 group-hover:border-gray-900 transition-colors">
+                          "{cmd}"
+                        </code>
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                          </svg>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Pricing Section */}
         <section className="bg-gray-50 py-32 border-y border-gray-100">
           <div className="max-w-6xl mx-auto px-6">

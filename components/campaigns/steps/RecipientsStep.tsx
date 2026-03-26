@@ -86,59 +86,47 @@ export const RecipientsStep = ({ data, onChange }: RecipientsStepProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
       <div>
-        <Label className="text-base font-semibold block mb-2">Upload Recipients (CSV)</Label>
-        <p className="text-sm text-gray-600 mb-4">Import multiple recipients at once from a CSV file</p>
+        <div className="flex items-center justify-between mb-1">
+          <Label className="text-sm font-semibold">Upload Recipients (CSV)</Label>
+          <button
+            onClick={downloadExampleCSV}
+            className="text-[10px] text-purple-600 hover:underline font-medium"
+          >
+            Example CSV
+          </button>
+        </div>
+        <p className="text-xs text-gray-500 mb-2">Import multiple at once</p>
 
         <div
-          className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
-            dragActive ? 'border-purple-500 bg-purple-50' : 'border-gray-300 bg-gray-50'
+          className={`border-2 border-dashed rounded-xl p-4 text-center transition-colors cursor-pointer ${
+            dragActive ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-gray-50/50'
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
+          onClick={() => document.getElementById('csvInput')?.click()}
         >
-          <div className="mb-4">
-            <input
-              type="file"
-              accept=".csv"
-              onChange={handleFileChange}
-              className="hidden"
-              id="csvInput"
-            />
-            <label htmlFor="csvInput" className="cursor-pointer">
-              <div className="text-3xl mb-2">📁</div>
-              <p className="font-semibold text-gray-900">Drag and drop your CSV file</p>
-              <p className="text-sm text-gray-600">or click to select</p>
-            </label>
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            className="hidden"
+            id="csvInput"
+          />
+          <div className="pointer-events-none">
+            <p className="text-sm font-medium text-gray-900">Drop CSV or click to upload</p>
+            <p className="text-[10px] text-gray-400 mt-0.5">Quickly import your audience list</p>
           </div>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => document.getElementById('csvInput')?.click()}
-            className="mt-4"
-          >
-            Choose File
-          </Button>
         </div>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={downloadExampleCSV}
-          className="mt-4 text-purple-600"
-        >
-          Download Example CSV
-        </Button>
       </div>
 
-      <div className="border-t pt-6">
-        <Label className="text-base font-semibold block mb-4">Add Recipients Manually</Label>
+      <div>
+        <Label className="text-sm font-semibold block mb-3">Add Recipients Manually</Label>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+        <div className="grid grid-cols-1 gap-2 mb-3">
           <Input
             placeholder="Name (optional)"
             value={newRecipient.name || ''}
@@ -165,14 +153,15 @@ export const RecipientsStep = ({ data, onChange }: RecipientsStepProps) => {
 
         <Button
           onClick={addRecipient}
-          className="w-full bg-purple-600 hover:bg-purple-700"
+          size="sm"
+          className="w-full bg-purple-600 hover:bg-purple-700 h-9"
         >
           Add Recipient
         </Button>
       </div>
 
       {data.recipients.length > 0 && (
-        <div className="border-t pt-6">
+        <div className="md:col-span-2 border-t pt-4">
           <Label className="text-base font-semibold block mb-4">
             Recipients ({data.recipients.length})
           </Label>

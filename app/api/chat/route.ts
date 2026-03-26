@@ -28,13 +28,14 @@ export async function POST(request: Request): Promise<Response> {
 
     // --- STEP 1: CAMPAIGN ---
     // Improved extraction logic
-    const budgetMatch = message.match(/budget\s*(?:\$|usd)?\s*(\d+(?:[.,]\d+)?)/i);
+    const budgetMatch = message.match(/(?:budget|with budget)\s*(?:\$|usd)?\s*(\d+(?:[.,]\d+)?)/i);
     const typeMatch = message.match(/\b(email|sms|both)\b/i);
+    const descriptionMatch = message.match(/(?:about|described as|description:)\s+(.+?)(?:\s+with|\s+budget|\s*$)/i);
 
     let campaignName = "";
-    const nameMatch = message.match(/(?:create|new)\s+(?:a\s+)?(?:new\s+)?(?:email|sms|both)?\s*campaign\s+(?:for\s+|called\s+)?(.+?)(?:\s+with|\s+budget|\s*$)/i) ||
-                     message.match(/set\s+campaign\s+name\s+to\s+(.+)/i) ||
-                     message.match(/(.+)\s+campaign/i);
+    const nameMatch = message.match(/(?:create|new)\s+(?:a\s+)?(?:new\s+)?(?:email|sms|both)?\s*campaign\s+(?:for\s+|called\s+)?(.+?)(?:\s+with|\s+budget|\s+about|\s+described|\s+description|\s*$)/i) ||
+                     message.match(/set\s+campaign\s+name\s+to\s+(.+?)(?:\s+about|\s+described|\s+description|\s*$)/i) ||
+                     message.match(/(.+?)\s+campaign(?:\s+about|\s+described|\s+description|\s+budget|\s+with|\s*$)/i);
 
     if (nameMatch) {
       campaignName = nameMatch[1].trim();
@@ -54,10 +55,11 @@ export async function POST(request: Request): Promise<Response> {
                            messageLower === "new campaign" ||
                            (messageLower.includes("create") && messageLower.includes("campaign") && !campaignName);
 
-    if ((nameMatch || budgetMatch || typeMatch) && !isGenericCreate) {
+    if ((nameMatch || budgetMatch || typeMatch || descriptionMatch) && !isGenericCreate) {
       const name = campaignName ? toProperCase(campaignName) : "";
       const budget = budgetMatch ? parseFloat(budgetMatch[1].replace(",", "")) : undefined;
       const type = typeMatch ? typeMatch[1].toLowerCase() : undefined;
+      const description = descriptionMatch ? descriptionMatch[1].trim() : undefined;
 
       chatResponse = "Got it. Let's set up your campaign.";
 
@@ -77,6 +79,7 @@ export async function POST(request: Request): Promise<Response> {
       }
       if (budget) formData.budget = budget;
       if (type) formData.campaignType = type;
+      if (description) formData.description = description;
 
       actions.push({
         type: "SET_FORM",

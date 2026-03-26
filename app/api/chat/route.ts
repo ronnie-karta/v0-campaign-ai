@@ -221,6 +221,108 @@ export async function POST(request: Request): Promise<Response> {
       }
     }
 
+    // --- AUTOMATION: FILL ALL DETAILS ---
+    if (!identified) {
+      if (messageLower.includes("automate full campaign") || messageLower.includes("fill all details") || messageLower.includes("automate campaign")) {
+        chatResponse = "I'm automating the entire campaign setup for you. All details from Step 1 to Step 5 are being populated.";
+
+        if (!isCampaignPage) {
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+        }
+
+        // Step 1: Campaign
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "campaignForm",
+            data: {
+              campaignName: "Automated Summer Sale",
+              campaignType: "email",
+              description: "A fully automated campaign to promote our summer collection with a 30% discount.",
+              budget: 5000
+            }
+          }
+        });
+
+        // Step 2: Customise
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "customiseForm",
+            data: {
+              senderName: "Karta Marketing Team",
+              senderEmail: "marketing@karta-ai.com",
+              subject: "Summer is here! Enjoy 30% off everything",
+              messageContent: "Hi there! Summer has officially arrived, and we want you to celebrate in style. Use code SUMMER30 at checkout to get 30% off your entire order. Shop now and save big!"
+            }
+          }
+        });
+
+        // Step 3: Recipients
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "recipientsForm",
+            data: {
+              recipients: [
+                { id: "r1", name: "Alice Johnson", email: "alice@example.com" },
+                { id: "r2", name: "Bob Smith", email: "bob@example.com" },
+                { id: "r3", name: "Charlie Brown", email: "charlie@example.com" },
+                { id: "r4", name: "Diana Prince", email: "diana@example.com" },
+                { id: "r5", name: "Edward Norton", email: "edward@example.com" }
+              ]
+            }
+          }
+        });
+
+        // Step 4: Delivery
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "deliveryForm",
+            data: {
+              scheduleType: "scheduled",
+              sendDateTime: "2026-06-01T09:00",
+              timezone: "America/New_York",
+              repeatFrequency: "once"
+            }
+          }
+        });
+
+        // Step 5: Payment
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "paymentForm",
+            data: {
+              paymentMethod: "credit-card",
+              billingEmail: "billing@karta-ai.com",
+              agreeToTerms: true
+            }
+          }
+        });
+
+        // Move to final step
+        actions.push({
+          type: "SET_STATE",
+          payload: { key: "campaignStep", value: 5 }
+        });
+
+        return Response.json({
+          chat: chatResponse,
+          actions: actions,
+          mode: "plan",
+          steps: [
+            { id: "s1", description: "Identity & Goals configured", status: "completed" },
+            { id: "s2", description: "Creative Content designed", status: "completed" },
+            { id: "s3", description: "Target Audience selected", status: "completed" },
+            { id: "s4", description: "Logistics & Delivery scheduled", status: "completed" },
+            { id: "s5", description: "Final Review & Payment ready", status: "current" }
+          ]
+        });
+      }
+    }
+
     // --- MISC / NAVIGATION ---
     if (!identified) {
       if (messageLower.includes("review campaign")) {

@@ -12,4 +12,6 @@ export const AI_COMMANDS = [
   "Pay using card",
   "Review campaign",
   "Reset campaign",
+  "Automate full campaign",
+  "Fill all details",
 ];

@@ -200,34 +200,27 @@ export async function POST(request: Request): Promise<Response> {
     // --- STEP 5: PAYMENT ---
     if (!identified) {
       if (messageLower.includes("pay") || messageLower.includes("card") || messageLower.includes("payment") || messageLower.includes("billing") || messageLower.includes("proceed to payment")) {
-        const data: any = {};
-        if (messageLower.includes("card")) data.method = "card";
+        const campaignData = {
+          name: "Automated Summer Sale",
+          type: "email",
+          budget: 5000,
+          sender: "Karta Marketing Team",
+          subject: "Summer is here! Enjoy 30% off everything",
+          recipients: 5,
+          delivery: "2026-06-01 09:00",
+          method: "Credit Card"
+        };
 
-        chatResponse = "Proceeding to payment.";
+        chatResponse = `I've set up everything for you and we're ready to proceed to payment.
 
-        if (!isCampaignPage) {
-          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
-        }
+**Summary of your campaign:**
+- **Campaign**: ${campaignData.name} (${campaignData.type}, budget: $${campaignData.budget})
+- **Creative**: Sender: ${campaignData.sender}, Subject: ${campaignData.subject}
+- **Audience**: ${campaignData.recipients} recipients selected
+- **Logistics**: Scheduled for ${campaignData.delivery}
+- **Payment**: Ready with ${campaignData.method}
 
-        actions.push({
-          type: "SET_STATE",
-          payload: { key: "campaignStep", value: 5 }
-        });
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "paymentForm",
-            data: data
-          }
-        });
-        identified = true;
-      }
-    }
-
-    // --- AUTOMATION: FILL ALL DETAILS ---
-    if (!identified) {
-      if (messageLower.includes("automate full campaign") || messageLower.includes("fill all details") || messageLower.includes("automate campaign")) {
-        chatResponse = "I'm automating the entire campaign setup for you. All details from Step 1 to Step 5 are being populated.";
+I've populated all details from Step 1 to Step 5 for you.`;
 
         if (!isCampaignPage) {
           actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
@@ -239,10 +232,10 @@ export async function POST(request: Request): Promise<Response> {
           payload: {
             formId: "campaignForm",
             data: {
-              campaignName: "Automated Summer Sale",
-              campaignType: "email",
+              campaignName: campaignData.name,
+              campaignType: campaignData.type,
               description: "A fully automated campaign to promote our summer collection with a 30% discount.",
-              budget: 5000
+              budget: campaignData.budget
             }
           }
         });
@@ -253,9 +246,131 @@ export async function POST(request: Request): Promise<Response> {
           payload: {
             formId: "customiseForm",
             data: {
-              senderName: "Karta Marketing Team",
+              senderName: campaignData.sender,
               senderEmail: "marketing@karta-ai.com",
-              subject: "Summer is here! Enjoy 30% off everything",
+              subject: campaignData.subject,
+              messageContent: "Hi there! Summer has officially arrived, and we want you to celebrate in style. Use code SUMMER30 at checkout to get 30% off your entire order. Shop now and save big!"
+            }
+          }
+        });
+
+        // Step 3: Recipients
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "recipientsForm",
+            data: {
+              recipients: [
+                { id: "r1", name: "Alice Johnson", email: "alice@example.com" },
+                { id: "r2", name: "Bob Smith", email: "bob@example.com" },
+                { id: "r3", name: "Charlie Brown", email: "charlie@example.com" },
+                { id: "r4", name: "Diana Prince", email: "diana@example.com" },
+                { id: "r5", name: "Edward Norton", email: "edward@example.com" }
+              ]
+            }
+          }
+        });
+
+        // Step 4: Delivery
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "deliveryForm",
+            data: {
+              scheduleType: "scheduled",
+              sendDateTime: "2026-06-01T09:00",
+              timezone: "America/New_York",
+              repeatFrequency: "once"
+            }
+          }
+        });
+
+        // Step 5: Payment
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "paymentForm",
+            data: {
+              paymentMethod: "credit-card",
+              billingEmail: "billing@karta-ai.com",
+              agreeToTerms: true
+            }
+          }
+        });
+
+        // Move to final step
+        actions.push({
+          type: "SET_STATE",
+          payload: { key: "campaignStep", value: 5 }
+        });
+
+        return Response.json({
+          chat: chatResponse,
+          actions: actions,
+          mode: "plan",
+          steps: [
+            { id: "s1", description: "Identity & Goals configured", status: "completed" },
+            { id: "s2", description: "Creative Content designed", status: "completed" },
+            { id: "s3", description: "Target Audience selected", status: "completed" },
+            { id: "s4", description: "Logistics & Delivery scheduled", status: "completed" },
+            { id: "s5", description: "Final Review & Payment ready", status: "current" }
+          ]
+        });
+      }
+    }
+
+    // --- AUTOMATION: FILL ALL DETAILS ---
+    if (!identified) {
+      if (messageLower.includes("automate full campaign") || messageLower.includes("fill all details") || messageLower.includes("automate campaign")) {
+        const campaignData = {
+          name: "Automated Summer Sale",
+          type: "email",
+          budget: 5000,
+          sender: "Karta Marketing Team",
+          subject: "Summer is here! Enjoy 30% off everything",
+          recipients: 5,
+          delivery: "2026-06-01 09:00",
+          method: "Credit Card"
+        };
+
+        chatResponse = `I'm automating the entire campaign setup for you. All details from Step 1 to Step 5 are being populated.
+
+**Summary of your campaign:**
+- **Campaign**: ${campaignData.name} (${campaignData.type}, budget: $${campaignData.budget})
+- **Creative**: Sender: ${campaignData.sender}, Subject: ${campaignData.subject}
+- **Audience**: ${campaignData.recipients} recipients selected
+- **Logistics**: Scheduled for ${campaignData.delivery}
+- **Payment**: Ready with ${campaignData.method}
+
+Proceeding to the final review step.`;
+
+        if (!isCampaignPage) {
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+        }
+
+        // Step 1: Campaign
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "campaignForm",
+            data: {
+              campaignName: campaignData.name,
+              campaignType: campaignData.type,
+              description: "A fully automated campaign to promote our summer collection with a 30% discount.",
+              budget: campaignData.budget
+            }
+          }
+        });
+
+        // Step 2: Customise
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "customiseForm",
+            data: {
+              senderName: campaignData.sender,
+              senderEmail: "marketing@karta-ai.com",
+              subject: campaignData.subject,
               messageContent: "Hi there! Summer has officially arrived, and we want you to celebrate in style. Use code SUMMER30 at checkout to get 30% off your entire order. Shop now and save big!"
             }
           }

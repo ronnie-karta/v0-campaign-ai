@@ -99,39 +99,41 @@ export const DeliveryStep = ({ data, onChange }: DeliveryStepProps) => {
         </div>
       )}
 
-      <div>
-        <Label htmlFor="timezone" className="text-base font-semibold">
-          Timezone
-        </Label>
-        <p className="text-sm text-gray-600 mb-2">Your recipients' timezone for send time</p>
-        <Select value={data.timezone} onValueChange={(value) => onChange({ timezone: value })}>
-          <SelectTrigger id="timezone" className="mt-2">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {TIMEZONES.map(tz => (
-              <SelectItem key={tz} value={tz}>{tz}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <Label htmlFor="timezone" className="text-base font-semibold">
+            Timezone
+          </Label>
+          <p className="text-sm text-gray-600 mb-2">Your recipients' timezone for send time</p>
+          <Select value={data.timezone} onValueChange={(value) => onChange({ timezone: value })}>
+            <SelectTrigger id="timezone" className="mt-2">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {TIMEZONES.map(tz => (
+                <SelectItem key={tz} value={tz}>{tz}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <div>
-        <Label htmlFor="frequency" className="text-base font-semibold">
-          Repeat Frequency
-        </Label>
-        <p className="text-sm text-gray-600 mb-2">How often should this campaign be sent</p>
-        <Select value={data.repeatFrequency} onValueChange={(value: any) => onChange({ repeatFrequency: value })}>
-          <SelectTrigger id="frequency" className="mt-2">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="once">Send Once</SelectItem>
-            <SelectItem value="daily">Daily</SelectItem>
-            <SelectItem value="weekly">Weekly</SelectItem>
-            <SelectItem value="monthly">Monthly</SelectItem>
-          </SelectContent>
-        </Select>
+        <div>
+          <Label htmlFor="frequency" className="text-base font-semibold">
+            Repeat Frequency
+          </Label>
+          <p className="text-sm text-gray-600 mb-2">How often should this campaign be sent</p>
+          <Select value={data.repeatFrequency} onValueChange={(value: any) => onChange({ repeatFrequency: value })}>
+            <SelectTrigger id="frequency" className="mt-2">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="once">Send Once</SelectItem>
+              <SelectItem value="daily">Daily</SelectItem>
+              <SelectItem value="weekly">Weekly</SelectItem>
+              <SelectItem value="monthly">Monthly</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
   );

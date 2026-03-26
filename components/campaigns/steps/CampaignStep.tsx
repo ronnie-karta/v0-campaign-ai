@@ -13,7 +13,7 @@ interface CampaignStepProps {
 
 export const CampaignStep = ({ data, onChange }: CampaignStepProps) => {
   return (
-    <div className="space-y-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
         <Label htmlFor="campaignName" className="text-base font-semibold">
           Campaign Name
@@ -45,7 +45,7 @@ export const CampaignStep = ({ data, onChange }: CampaignStepProps) => {
         </Select>
       </div>
 
-      <div>
+      <div className="md:col-span-2">
         <Label htmlFor="description" className="text-base font-semibold">
           Campaign Description
         </Label>

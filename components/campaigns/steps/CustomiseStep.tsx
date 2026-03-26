@@ -15,7 +15,7 @@ export const CustomiseStep = ({ data, onChange }: CustomiseStepProps) => {
   const isSmsCampaign = data.campaignType === 'sms' || data.campaignType === 'both';
 
   return (
-    <div className="space-y-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
         <Label htmlFor="senderName" className="text-base font-semibold">
           Sender Name
@@ -93,7 +93,7 @@ export const CustomiseStep = ({ data, onChange }: CustomiseStepProps) => {
         </div>
       )}
 
-      <div>
+      <div className="md:col-span-2">
         <Label htmlFor="messageContent" className="text-base font-semibold">
           Message Content
         </Label>

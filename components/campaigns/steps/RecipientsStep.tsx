@@ -138,7 +138,7 @@ export const RecipientsStep = ({ data, onChange }: RecipientsStepProps) => {
       <div className="border-t pt-6">
         <Label className="text-base font-semibold block mb-4">Add Recipients Manually</Label>
 
-        <div className="grid grid-cols-1 gap-3 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
           <Input
             placeholder="Name (optional)"
             value={newRecipient.name || ''}

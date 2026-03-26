@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useEffect } from 'react';
 import { CampaignData, INITIAL_CAMPAIGN_DATA } from '@/lib/campaign-types';
 import { StepIndicator } from '@/components/campaigns/StepIndicator';
 import { CampaignStep } from '@/components/campaigns/steps/CampaignStep';
@@ -19,11 +18,33 @@ const STEPS = [
   { id: 5, label: 'payment', title: 'Payment', icon: '💳' },
 ];
 
+const FORM_IDS = [
+  'campaignForm',
+  'customiseForm',
+  'recipientsForm',
+  'deliveryForm',
+  'paymentForm',
+];
+
 export default function CreateCampaignPage() {
   const { state = {}, forms = {}, set, setForm } = useAIAgent();
 
   const currentStep = state.campaignStep || 1;
-  const campaignData = (forms.campaignForm as CampaignData) || INITIAL_CAMPAIGN_DATA;
+
+  // Aggregate campaign data from all 5 form IDs
+  const campaignData: CampaignData = {
+    ...INITIAL_CAMPAIGN_DATA,
+    ...(forms.campaignForm || {}),
+    ...(forms.customiseForm || {}),
+    ...(forms.recipientsForm || {}),
+    ...(forms.deliveryForm || {}),
+    ...(forms.paymentForm || {}),
+    // Map AI extracted fields to CampaignData fields if they differ
+    campaignName: forms.campaignForm?.name || forms.campaignForm?.campaignName || INITIAL_CAMPAIGN_DATA.campaignName,
+    messageContent: forms.customiseForm?.message || forms.customiseForm?.messageContent || INITIAL_CAMPAIGN_DATA.messageContent,
+    sendDateTime: forms.deliveryForm?.date || forms.deliveryForm?.sendDateTime || INITIAL_CAMPAIGN_DATA.sendDateTime,
+    paymentMethod: forms.paymentForm?.method || forms.paymentForm?.paymentMethod || INITIAL_CAMPAIGN_DATA.paymentMethod,
+  };
 
   // Sync state if empty
   useEffect(() => {
@@ -31,7 +52,7 @@ export default function CreateCampaignPage() {
       set('campaignStep', 1);
     }
     if (!forms.campaignForm) {
-      setForm('campaignForm', INITIAL_CAMPAIGN_DATA);
+      setForm('campaignForm', {});
     }
   }, [state.campaignStep, forms.campaignForm, set, setForm]);
 
@@ -40,7 +61,9 @@ export default function CreateCampaignPage() {
   };
 
   const handleDataChange = (updates: Partial<CampaignData>) => {
-    setForm('campaignForm', { ...campaignData, ...updates });
+    const currentFormId = FORM_IDS[currentStep - 1];
+    const currentFormData = forms[currentFormId] || {};
+    setForm(currentFormId, { ...currentFormData, ...updates });
   };
 
   const isStepValid = (): boolean => {
@@ -48,11 +71,11 @@ export default function CreateCampaignPage() {
       case 1:
         return !!(campaignData.campaignName && campaignData.campaignType && campaignData.description && campaignData.budget > 0);
       case 2:
-        return campaignData.recipients.length > 0;
-      case 3:
         return !!(campaignData.senderName && campaignData.messageContent && 
           (campaignData.campaignType !== 'email' || campaignData.senderEmail) &&
           (campaignData.campaignType !== 'sms' || campaignData.senderPhone));
+      case 3:
+        return campaignData.recipients.length > 0;
       case 4:
         return !!(campaignData.scheduleType === 'immediate' || campaignData.sendDateTime);
       case 5:

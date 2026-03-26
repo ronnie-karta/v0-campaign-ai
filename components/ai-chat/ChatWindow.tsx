@@ -5,6 +5,7 @@ import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { X } from "lucide-react";
+import { AI_COMMANDS } from "@/lib/ai/constants";
 
 export const ChatWindow = () => {
   const { messages, isLoading, setOpen } = useAIAgent();
@@ -39,7 +40,7 @@ export const ChatWindow = () => {
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <div className="text-center max-w-[200px]">
+            <div className="text-center max-w-[240px]">
               <div className="mb-4 text-4xl grayscale">💬</div>
               <p className="text-gray-900 text-sm font-bold mb-2">
                 System Initialized
@@ -47,8 +48,8 @@ export const ChatWindow = () => {
               <p className="text-gray-500 text-xs leading-relaxed mb-6">
                 Awaiting your command. I can manage campaigns, status, and more.
               </p>
-              <div className="space-y-2">
-                {["Hello", "What can you do?", "Show features"].map((text) => (
+              <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1 custom-scrollbar">
+                {AI_COMMANDS.slice(0, 5).map((text) => (
                   <div key={text} className="px-3 py-2 rounded-lg border border-gray-100 text-[10px] font-bold tracking-wider uppercase text-gray-400 hover:border-gray-300 hover:text-gray-900 transition-all cursor-default">
                     {text}
                   </div>

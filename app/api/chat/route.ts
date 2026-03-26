@@ -20,98 +20,222 @@ export async function POST(request: Request): Promise<Response> {
     const body: ChatRequest = await request.json();
     const { message, context } = body;
     const messageLower = message.toLowerCase().trim();
+    const isCampaignPage = context?.currentPage?.includes("/campaigns/create");
 
-    // --- 1. DATA EXTRACTION & NORMALIZATION ---
-    const data: Record<string, any> = {};
-    let chatMessage = "I've updated your campaign.";
-    let step = context?.currentStep || 1;
-
-    // Name extraction (Proper Case)
-    const nameMatch = message.match(/(?:create\s+)?([a-zA-Z0-9\s]+)\s+campaign/i);
-    if (nameMatch && !messageLower.includes("create campaign")) {
-      data.name = toProperCase(nameMatch[1].trim()) + " Campaign";
-      step = 1;
-    } else if (messageLower.includes("nike")) {
-      data.name = "Nike Campaign";
-      step = 1;
-    } else if (messageLower.includes("adidas")) {
-      data.name = "Adidas Campaign";
-      step = 1;
-    }
-
-    // Budget extraction (Numeric)
-    const budgetMatch = message.match(/budget\s*(?:\$|usd|of\s*)?\s*(\d+)|(\d+)\s*budget/i);
-    if (budgetMatch) {
-      data.budget = parseInt(budgetMatch[1] || budgetMatch[2]);
-      step = 1;
-    }
-
-    // Message/Customisation extraction (Step 2)
-    const messageMatch = message.match(/(?:set\s+)?(?:message|content|text|customise)\s*(?::|is)?\s*(.+)/i);
-    if (messageMatch) {
-      data.message = messageMatch[1].trim();
-      step = 2;
-    } else if (messageLower.includes("promo") || messageLower.includes("sale") || messageLower.includes("off")) {
-      if (!data.name && !data.budget) {
-        data.message = message.trim();
-        step = 2;
-      }
-    }
-
-    // Recipients extraction (Step 3)
-    const recipientsMatch = message.match(/(\d+)\s*(?:users|recipients|people|customers)/i);
-    if (recipientsMatch) {
-      data.recipients = parseInt(recipientsMatch[1]);
-      step = 3;
-    }
-
-    // Schedule/Delivery extraction (Step 4)
-    if (messageLower.includes("schedule") || messageLower.includes("tomorrow") || messageLower.includes("delivery") || messageLower.includes("send on")) {
-      let date = "2026-03-26"; // Mock tomorrow
-      const dateMatch = message.match(/(\d{4}-\d{2}-\d{2})/);
-      if (dateMatch) date = dateMatch[1];
-      data.scheduleDate = date;
-      step = 4;
-    }
-
-    // Payment extraction (Step 5)
-    if (messageLower.includes("pay") || messageLower.includes("credit card") || messageLower.includes("billing") || messageLower.includes("payment")) {
-      step = 5;
-    }
-
-    // --- 2. ACTION CONSTRUCTION ---
     const actions: Action[] = [];
+    let chatResponse = "";
+    let identified = false;
 
-    // ALWAYS include SET_FORM if any data exists
-    if (Object.keys(data).length > 0) {
+    // --- STEP 1: CAMPAIGN ---
+    const campaignMatch = message.match(/create\s+(?:a\s+)?(?:new\s+)?campaign\s+(.+)/i) ||
+                         message.match(/set\s+campaign\s+name\s+to\s+(.+)/i) ||
+                         message.match(/(?:create\s+)?([a-zA-Z0-9\s]+)\s+campaign/i);
+
+    // Explicitly check if the message is ONLY "create campaign" or similar
+    const isGenericCreate = messageLower === "create campaign" ||
+                           messageLower === "create a campaign" ||
+                           messageLower === "create a new campaign" ||
+                           messageLower === "new campaign";
+
+    if (campaignMatch && !isGenericCreate) {
+      const name = toProperCase(campaignMatch[1].trim());
+      chatResponse = "Got it. Let's set up your campaign.";
+
+      if (!isCampaignPage) {
+        actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+      }
+
+      actions.push({
+        type: "SET_STATE",
+        payload: { key: "campaignStep", value: 1 }
+      });
       actions.push({
         type: "SET_FORM",
         payload: {
           formId: "campaignForm",
-          data: data
+          data: { name }
         }
       });
-      
-      // Response logic matching mandated examples
-      if (messageLower === "nike campaign budget 5000") chatMessage = "Got it — setting up your campaign.";
-      else if (messageLower === "send to 200 users") chatMessage = "Added recipients.";
-      else if (messageLower === "schedule tomorrow") chatMessage = "Scheduled for tomorrow.";
-      else if (messageLower.includes("set message")) chatMessage = "Message updated.";
-      else chatMessage = `Got it — updated campaign fields.`;
+      identified = true;
+    } else if (isGenericCreate) {
+       chatResponse = "Got it. Let's set up your campaign.";
+
+       if (!isCampaignPage) {
+        actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+      }
+
+       actions.push({
+        type: "SET_STATE",
+        payload: { key: "campaignStep", value: 1 }
+      });
+      actions.push({
+        type: "SET_FORM",
+        payload: {
+          formId: "campaignForm",
+          data: {}
+        }
+      });
+      identified = true;
     }
 
-    // ALWAYS update step using SET_STATE
-    actions.push({
-      type: "SET_STATE",
-      payload: {
-        key: "campaignStep",
-        value: step
-      }
-    });
+    // --- STEP 2: CUSTOMISE ---
+    if (!identified) {
+      const templateMatch = message.match(/use\s+(?:email\s+)?template\s+(.+)/i);
+      const themeMatch = message.match(/apply\s+(.+)\s+theme/i) || message.match(/use\s+(.+)\s+theme/i);
 
-    // --- 3. FINAL RESPONSE (STRICT JSON) ---
+      if (templateMatch || themeMatch || messageLower.includes("customise") || messageLower.includes("customize")) {
+        const data: any = {};
+        if (templateMatch) data.template = templateMatch[1].trim();
+        if (themeMatch) data.theme = themeMatch[1].trim();
+
+        chatResponse = "Customizing your campaign.";
+
+        if (!isCampaignPage) {
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+        }
+
+        actions.push({
+          type: "SET_STATE",
+          payload: { key: "campaignStep", value: 2 }
+        });
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "customiseForm",
+            data: data
+          }
+        });
+        identified = true;
+      }
+    }
+
+    // --- STEP 3: RECIPIENTS ---
+    if (!identified) {
+      if (messageLower.includes("send to all customers") || messageLower.includes("upload recipient list") || messageLower.includes("recipients")) {
+        const data: any = {};
+        if (messageLower.includes("all customers")) data.segment = "all_customers";
+
+        chatResponse = "Setting recipients.";
+
+        if (!isCampaignPage) {
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+        }
+
+        actions.push({
+          type: "SET_STATE",
+          payload: { key: "campaignStep", value: 3 }
+        });
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "recipientsForm",
+            data: data
+          }
+        });
+        identified = true;
+      }
+    }
+
+    // --- STEP 4: DELIVERY ---
+    if (!identified) {
+      if (messageLower.includes("schedule") || messageLower.includes("tomorrow") || messageLower.includes("send immediately") || messageLower.includes("9am") || messageLower.includes("delivery")) {
+        const data: any = {};
+        if (messageLower.includes("tomorrow")) data.date = "2026-03-26"; // Mock tomorrow
+        if (messageLower.includes("9am")) data.time = "09:00";
+        if (messageLower.includes("immediately")) data.immediate = true;
+
+        chatResponse = "Scheduling delivery.";
+
+        if (!isCampaignPage) {
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+        }
+
+        actions.push({
+          type: "SET_STATE",
+          payload: { key: "campaignStep", value: 4 }
+        });
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "deliveryForm",
+            data: data
+          }
+        });
+        identified = true;
+      }
+    }
+
+    // --- STEP 5: PAYMENT ---
+    if (!identified) {
+      if (messageLower.includes("pay") || messageLower.includes("card") || messageLower.includes("payment") || messageLower.includes("billing") || messageLower.includes("proceed to payment")) {
+        const data: any = {};
+        if (messageLower.includes("card")) data.method = "card";
+
+        chatResponse = "Proceeding to payment.";
+
+        if (!isCampaignPage) {
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+        }
+
+        actions.push({
+          type: "SET_STATE",
+          payload: { key: "campaignStep", value: 5 }
+        });
+        actions.push({
+          type: "SET_FORM",
+          payload: {
+            formId: "paymentForm",
+            data: data
+          }
+        });
+        identified = true;
+      }
+    }
+
+    // --- MISC / NAVIGATION ---
+    if (!identified) {
+      if (messageLower.includes("review campaign")) {
+        chatResponse = "Let's review your campaign.";
+
+        if (!isCampaignPage) {
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+        }
+
+        actions.push({
+          type: "SET_STATE",
+          payload: { key: "campaignStep", value: 5 }
+        });
+        identified = true;
+      } else if (messageLower.includes("reset campaign")) {
+        chatResponse = "Campaign reset.";
+        actions.push({ type: "SET_STATE", payload: { key: "campaignStep", value: 1 } });
+        actions.push({ type: "RESET_FORM", payload: { formId: "campaignForm" } });
+        actions.push({ type: "RESET_FORM", payload: { formId: "customiseForm" } });
+        actions.push({ type: "RESET_FORM", payload: { formId: "recipientsForm" } });
+        actions.push({ type: "RESET_FORM", payload: { formId: "deliveryForm" } });
+        actions.push({ type: "RESET_FORM", payload: { formId: "paymentForm" } });
+        identified = true;
+      }
+    }
+
+    // --- FALLBACK ---
+    if (!identified) {
+      return Response.json({
+        chat: "What would you like to do?",
+        actions: [
+          {
+            type: "OPEN_MODAL",
+            payload: {
+              modalId: "quick-actions",
+              data: {}
+            }
+          }
+        ]
+      });
+    }
+
     return Response.json({
-      chat: chatMessage,
+      chat: chatResponse,
       actions: actions
     });
 

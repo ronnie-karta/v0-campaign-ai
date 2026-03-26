@@ -1,6 +1,27 @@
 import Link from 'next/link';
+import { AI_COMMANDS } from '@/lib/ai/constants';
 
 export default function Home() {
+  // Group commands for display
+  const commandGroups = [
+    {
+      category: 'Campaign Creation',
+      commands: AI_COMMANDS.filter(c => c.toLowerCase().includes('campaign'))
+    },
+    {
+      category: 'Customisation & Themes',
+      commands: AI_COMMANDS.filter(c => c.toLowerCase().includes('theme') || c.toLowerCase().includes('template'))
+    },
+    {
+      category: 'Recipients & Delivery',
+      commands: AI_COMMANDS.filter(c => c.toLowerCase().includes('customer') || c.toLowerCase().includes('recipient') || c.toLowerCase().includes('schedule') || c.toLowerCase().includes('immediately') || c.toLowerCase().includes('sms'))
+    },
+    {
+      category: 'Payment & Review',
+      commands: AI_COMMANDS.filter(c => c.toLowerCase().includes('pay') || c.toLowerCase().includes('payment') || c.toLowerCase().includes('review'))
+    }
+  ];
+
   return (
     <div className="flex min-h-screen flex-col bg-white text-gray-900 font-sans selection:bg-gray-200">
       <main className="flex-1 pt-32">
@@ -15,9 +36,9 @@ export default function Home() {
               Manage high-scale campaigns and complex workflows with absolute precision.
             </p>
             <div className="flex items-center justify-center gap-4 pt-4">
-              <button className="bg-gray-900 text-white px-8 py-4 rounded-xl font-medium hover:bg-gray-800 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm">
+              <Link href="/campaigns/create" className="bg-gray-900 text-white px-8 py-4 rounded-xl font-medium hover:bg-gray-800 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm">
                 Open Dashboard
-              </button>
+              </Link>
               <button className="border border-gray-300 px-8 py-4 rounded-xl font-medium hover:bg-gray-50 transition-all hover:scale-[1.02] active:scale-[0.98]">
                 View Documentation
               </button>
@@ -107,41 +128,11 @@ export default function Home() {
             </div>
 
             <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                { 
-                  category: 'Campaign Creation', 
-                  commands: [
-                    'create campaign for Nike budget 5000',
-                    'Adidas campaign budget 3000'
-                  ]
-                },
-                { 
-                  category: 'Audience & Content', 
-                  commands: [
-                    'send to 200 users',
-                    'set message promo sale 50% off'
-                  ]
-                },
-                { 
-                  category: 'Scheduling & Delivery', 
-                  commands: [
-                    'schedule tomorrow',
-                    'deliver on 2026-03-26'
-                  ]
-                },
-                { 
-                  category: 'System & Navigation', 
-                  commands: [
-                    'help',
-                    'navigate to campaigns',
-                    'hello'
-                  ]
-                }
-              ].map((group, i) => (
+              {commandGroups.map((group, i) => (
                 <div key={i} className="p-6 rounded-xl border border-gray-100 bg-gray-50/50 space-y-3">
                   <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400">{group.category}</h4>
                   <div className="space-y-2">
-                    {group.commands.map((cmd, j) => (
+                    {group.commands.slice(0, 3).map((cmd, j) => (
                       <div key={j} className="flex items-center gap-2 group cursor-pointer">
                         <code className="text-[13px] bg-white border border-gray-200 px-3 py-1.5 rounded-md text-gray-700 font-mono flex-1 group-hover:border-gray-900 transition-colors">
                           "{cmd}"

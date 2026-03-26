@@ -1,0 +1,15 @@
+export const AI_COMMANDS = [
+  "Create a new campaign",
+  "Set campaign name to Summer Sale",
+  "Use email template promo",
+  "Apply blue theme",
+  "Send to all customers",
+  "Upload recipient list",
+  "Schedule for tomorrow 9am",
+  "Send immediately",
+  "Use SMS instead of email",
+  "Proceed to payment",
+  "Pay using card",
+  "Review campaign",
+  "Reset campaign",
+];

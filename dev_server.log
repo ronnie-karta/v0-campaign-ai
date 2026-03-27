@@ -5,7 +5,48 @@
 ▲ Next.js 16.2.0 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 1065ms
+✓ Ready in 520ms
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
 
- GET /campaigns 200 in 1510ms (next.js: 615ms, application-code: 895ms)
- POST /api/chat 200 in 553ms (next.js: 503ms, application-code: 51ms)
+
+POST /api/campaigns error: Error [PrismaClientKnownRequestError]:
+Invalid `prisma.campaign.create()` invocation:
+
+
+The table `public.Campaign` does not exist in the current database.
+    at async POST (app/api/campaigns/route.ts:51:22)
+  49 |     const validatedData = campaignSchema.parse(body);
+  50 |
+> 51 |     const campaign = await db.campaign.create({
+     |                      ^
+  52 |       data: {
+  53 |         ...validatedData,
+  54 |         status: validatedData.status || "Draft", {
+  code: 'P2021',
+  meta: {
+    modelName: 'Campaign',
+    driverAdapterError: Error [DriverAdapterError]: TableDoesNotExist
+        at async POST (app/api/campaigns/route.ts:51:22)
+      49 |     const validatedData = campaignSchema.parse(body);
+      50 |
+    > 51 |     const campaign = await db.campaign.create({
+         |                      ^
+      52 |       data: {
+      53 |         ...validatedData,
+      54 |         status: validatedData.status || "Draft", {
+      [cause]: [Object]
+    }
+  },
+  clientVersion: '7.5.0'
+}
+ POST /api/campaigns 500 in 3.7s (next.js: 706ms, application-code: 3.0s)
+ POST /api/campaigns 201 in 1578ms (next.js: 6ms, application-code: 1572ms)
+ GET /api/campaigns 200 in 250ms (next.js: 4ms, application-code: 246ms)
+ PATCH /api/campaigns/9179a51f-60d7-410d-ab2f-eaf814bea6df 200 in 2.8s (next.js: 952ms, application-code: 1802ms)
+ DELETE /api/campaigns/9179a51f-60d7-410d-ab2f-eaf814bea6df 200 in 466ms (next.js: 14ms, application-code: 452ms)
+ GET /api/campaigns 200 in 230ms (next.js: 5ms, application-code: 225ms)
+ POST /api/campaigns 201 in 1887ms (next.js: 151ms, application-code: 1736ms)
+ GET /api/campaigns 200 in 235ms (next.js: 5ms, application-code: 230ms)

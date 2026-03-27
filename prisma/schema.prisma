@@ -4,12 +4,11 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Campaign {
   id             String            @id @default(uuid()) @db.Uuid
-  name           String
+  name           String?
   description    String?
   status         CampaignStatus    @default(Draft)
   step           Int               @default(1)
@@ -17,7 +16,7 @@ model Campaign {
   // Customise
   template       String?
   theme          String?
-  channel        Channel
+  channel        Channel?
 
   // Recipients
   audienceType   AudienceType      @default(Custom)
@@ -31,17 +30,19 @@ model Campaign {
   deliveryStatus DeliveryStatus    @default(Pending)
 
   // Payment
-  budget         Decimal           @db.Decimal(12, 2)
+  budget         Decimal?          @db.Decimal(12, 2)
   cost           Decimal?          @db.Decimal(12, 2)
   paymentStatus  PaymentStatus     @default(Pending)
 
   // System
   isDraft        Boolean           @default(true)
+  isDeleted      Boolean           @default(false)
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
   @@index([status])
   @@index([createdAt])
+  @@index([isDeleted])
 }
 
 model CampaignRecipient {
@@ -73,6 +74,7 @@ enum CampaignStatus {
 enum Channel {
   Email
   SMS
+  Both
 }
 
 enum AudienceType {

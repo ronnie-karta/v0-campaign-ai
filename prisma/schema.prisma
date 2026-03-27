@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Campaign {
+  id             String            @id @default(uuid()) @db.Uuid
+  name           String
+  description    String?
+  status         CampaignStatus    @default(Draft)
+  step           Int               @default(1)
+
+  // Customise
+  template       String?
+  theme          String?
+  channel        Channel
+
+  // Recipients
+  audienceType   AudienceType      @default(Custom)
+  recipientCount Int               @default(0)
+  recipients     CampaignRecipient[]
+
+  // Delivery
+  sendDate       DateTime?
+  sendTime       String?
+  timezone       String            @default("UTC")
+  deliveryStatus DeliveryStatus    @default(Pending)
+
+  // Payment
+  budget         Decimal           @db.Decimal(12, 2)
+  cost           Decimal?          @db.Decimal(12, 2)
+  paymentStatus  PaymentStatus     @default(Pending)
+
+  // System
+  isDraft        Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model CampaignRecipient {
+  id         String          @id @default(uuid()) @db.Uuid
+  campaignId String          @db.Uuid
+  campaign   Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  email      String?
+  phone      String?
+  name       String?
+  status     RecipientStatus @default(Pending)
+
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@index([campaignId])
+  @@index([status])
+  @@index([email])
+  @@index([phone])
+}
+
+enum CampaignStatus {
+  Draft
+  Scheduled
+  Sent
+  Completed
+}
+
+enum Channel {
+  Email
+  SMS
+}
+
+enum AudienceType {
+  All
+  Segment
+  Custom
+}
+
+enum DeliveryStatus {
+  Pending
+  Scheduled
+  Sent
+  Failed
+}
+
+enum PaymentStatus {
+  Pending
+  Paid
+  Failed
+  Refunded
+}
+
+enum RecipientStatus {
+  Pending
+  Sent
+  Failed
+}

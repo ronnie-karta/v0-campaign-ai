@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import { ChatWidget } from '@/components/ai-chat/ChatWidget'
-import { ModalManager } from '@/components/ai-chat/ModalManager'
-import { Header } from '@/components/Header'
+import { LayoutWrapper } from '@/components/LayoutWrapper'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -40,11 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        <Header />
-        {children}
-        <ChatWidget />
-        <ModalManager />
-        <Analytics />
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   )

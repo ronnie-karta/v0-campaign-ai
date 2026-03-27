@@ -20,7 +20,7 @@ export async function POST(request: Request): Promise<Response> {
     const body: ChatRequest = await request.json();
     const { message, context } = body;
     const messageLower = message.toLowerCase().trim();
-    const isCampaignPage = context?.currentPage?.includes("/campaigns/create");
+    const isCampaignPage = context?.currentPage?.startsWith("/campaign");
 
     const actions: Action[] = [];
     let chatResponse = "";
@@ -64,48 +64,47 @@ export async function POST(request: Request): Promise<Response> {
       chatResponse = "Got it. Let's set up your campaign.";
 
       if (!isCampaignPage) {
-        actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+        actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
       }
-
-      actions.push({
-        type: "SET_STATE",
-        payload: { key: "campaignStep", value: 1 }
-      });
 
       const formData: any = {};
-      if (name) {
-        formData.name = name;
-        formData.campaignName = name;
-      }
+      if (name) formData.name = name;
       if (budget) formData.budget = budget;
       if (type) formData.campaignType = type;
       if (description) formData.description = description;
 
       actions.push({
-        type: "SET_FORM",
+        type: "OPEN_VIEW",
         payload: {
-          formId: "campaignForm",
+          target: "campaignForm",
           data: formData
         }
+      });
+
+      // Also set state for the step indicator
+      actions.push({
+        type: "SET_STATE",
+        payload: { key: "campaignStep", value: 1 }
       });
       identified = true;
     } else if (isGenericCreate) {
        chatResponse = "Got it. Let's set up your campaign.";
 
        if (!isCampaignPage) {
-        actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+        actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
       }
 
-       actions.push({
-        type: "SET_STATE",
-        payload: { key: "campaignStep", value: 1 }
-      });
       actions.push({
-        type: "SET_FORM",
+        type: "OPEN_VIEW",
         payload: {
-          formId: "campaignForm",
+          target: "campaignForm",
           data: {}
         }
+      });
+
+      actions.push({
+        type: "SET_STATE",
+        payload: { key: "campaignStep", value: 1 }
       });
       identified = true;
     }
@@ -123,19 +122,20 @@ export async function POST(request: Request): Promise<Response> {
         chatResponse = "Customizing your campaign.";
 
         if (!isCampaignPage) {
-          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
         }
+
+        actions.push({
+          type: "OPEN_VIEW",
+          payload: {
+            target: "campaignForm",
+            data: data
+          }
+        });
 
         actions.push({
           type: "SET_STATE",
           payload: { key: "campaignStep", value: 2 }
-        });
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "customiseForm",
-            data: data
-          }
         });
         identified = true;
       }
@@ -150,19 +150,20 @@ export async function POST(request: Request): Promise<Response> {
         chatResponse = "Setting recipients.";
 
         if (!isCampaignPage) {
-          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
         }
+
+        actions.push({
+          type: "OPEN_VIEW",
+          payload: {
+            target: "campaignForm",
+            data: data
+          }
+        });
 
         actions.push({
           type: "SET_STATE",
           payload: { key: "campaignStep", value: 3 }
-        });
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "recipientsForm",
-            data: data
-          }
         });
         identified = true;
       }
@@ -179,19 +180,20 @@ export async function POST(request: Request): Promise<Response> {
         chatResponse = "Scheduling delivery.";
 
         if (!isCampaignPage) {
-          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
         }
+
+        actions.push({
+          type: "OPEN_VIEW",
+          payload: {
+            target: "campaignForm",
+            data: data
+          }
+        });
 
         actions.push({
           type: "SET_STATE",
           payload: { key: "campaignStep", value: 4 }
-        });
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "deliveryForm",
-            data: data
-          }
         });
         identified = true;
       }
@@ -223,78 +225,39 @@ export async function POST(request: Request): Promise<Response> {
 I've populated all details from Step 1 to Step 5 for you.`;
 
         if (!isCampaignPage) {
-          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
         }
 
-        // Step 1: Campaign
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "campaignForm",
-            data: {
-              campaignName: campaignData.name,
-              campaignType: campaignData.type,
-              description: "A fully automated campaign to promote our summer collection with a 30% discount.",
-              budget: campaignData.budget
-            }
-          }
-        });
+        const allData = {
+          name: campaignData.name,
+          campaignType: campaignData.type,
+          description: "A fully automated campaign to promote our summer collection with a 30% discount.",
+          budget: campaignData.budget,
+          senderName: campaignData.sender,
+          senderEmail: "marketing@karta-ai.com",
+          subject: campaignData.subject,
+          messageContent: "Hi there! Summer has officially arrived, and we want you to celebrate in style. Use code SUMMER30 at checkout to get 30% off your entire order. Shop now and save big!",
+          recipients: [
+            { id: "r1", name: "Alice Johnson", email: "alice@example.com" },
+            { id: "r2", name: "Bob Smith", email: "bob@example.com" },
+            { id: "r3", name: "Charlie Brown", email: "charlie@example.com" },
+            { id: "r4", name: "Diana Prince", email: "diana@example.com" },
+            { id: "r5", name: "Edward Norton", email: "edward@example.com" }
+          ],
+          scheduleType: "scheduled",
+          sendDateTime: "2026-06-01T09:00",
+          timezone: "America/New_York",
+          repeatFrequency: "once",
+          paymentMethod: "credit-card",
+          billingEmail: "billing@karta-ai.com",
+          agreeToTerms: true
+        };
 
-        // Step 2: Customise
         actions.push({
-          type: "SET_FORM",
+          type: "OPEN_VIEW",
           payload: {
-            formId: "customiseForm",
-            data: {
-              senderName: campaignData.sender,
-              senderEmail: "marketing@karta-ai.com",
-              subject: campaignData.subject,
-              messageContent: "Hi there! Summer has officially arrived, and we want you to celebrate in style. Use code SUMMER30 at checkout to get 30% off your entire order. Shop now and save big!"
-            }
-          }
-        });
-
-        // Step 3: Recipients
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "recipientsForm",
-            data: {
-              recipients: [
-                { id: "r1", name: "Alice Johnson", email: "alice@example.com" },
-                { id: "r2", name: "Bob Smith", email: "bob@example.com" },
-                { id: "r3", name: "Charlie Brown", email: "charlie@example.com" },
-                { id: "r4", name: "Diana Prince", email: "diana@example.com" },
-                { id: "r5", name: "Edward Norton", email: "edward@example.com" }
-              ]
-            }
-          }
-        });
-
-        // Step 4: Delivery
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "deliveryForm",
-            data: {
-              scheduleType: "scheduled",
-              sendDateTime: "2026-06-01T09:00",
-              timezone: "America/New_York",
-              repeatFrequency: "once"
-            }
-          }
-        });
-
-        // Step 5: Payment
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "paymentForm",
-            data: {
-              paymentMethod: "credit-card",
-              billingEmail: "billing@karta-ai.com",
-              agreeToTerms: true
-            }
+            target: "campaignForm",
+            data: allData
           }
         });
 
@@ -345,78 +308,39 @@ I've populated all details from Step 1 to Step 5 for you.`;
 Proceeding to the final review step.`;
 
         if (!isCampaignPage) {
-          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
         }
 
-        // Step 1: Campaign
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "campaignForm",
-            data: {
-              campaignName: campaignData.name,
-              campaignType: campaignData.type,
-              description: "A fully automated campaign to promote our summer collection with a 30% discount.",
-              budget: campaignData.budget
-            }
-          }
-        });
+        const allData = {
+          name: campaignData.name,
+          campaignType: campaignData.type,
+          description: "A fully automated campaign to promote our summer collection with a 30% discount.",
+          budget: campaignData.budget,
+          senderName: campaignData.sender,
+          senderEmail: "marketing@karta-ai.com",
+          subject: campaignData.subject,
+          messageContent: "Hi there! Summer has officially arrived, and we want you to celebrate in style. Use code SUMMER30 at checkout to get 30% off your entire order. Shop now and save big!",
+          recipients: [
+            { id: "r1", name: "Alice Johnson", email: "alice@example.com" },
+            { id: "r2", name: "Bob Smith", email: "bob@example.com" },
+            { id: "r3", name: "Charlie Brown", email: "charlie@example.com" },
+            { id: "r4", name: "Diana Prince", email: "diana@example.com" },
+            { id: "r5", name: "Edward Norton", email: "edward@example.com" }
+          ],
+          scheduleType: "scheduled",
+          sendDateTime: "2026-06-01T09:00",
+          timezone: "America/New_York",
+          repeatFrequency: "once",
+          paymentMethod: "credit-card",
+          billingEmail: "billing@karta-ai.com",
+          agreeToTerms: true
+        };
 
-        // Step 2: Customise
         actions.push({
-          type: "SET_FORM",
+          type: "OPEN_VIEW",
           payload: {
-            formId: "customiseForm",
-            data: {
-              senderName: campaignData.sender,
-              senderEmail: "marketing@karta-ai.com",
-              subject: campaignData.subject,
-              messageContent: "Hi there! Summer has officially arrived, and we want you to celebrate in style. Use code SUMMER30 at checkout to get 30% off your entire order. Shop now and save big!"
-            }
-          }
-        });
-
-        // Step 3: Recipients
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "recipientsForm",
-            data: {
-              recipients: [
-                { id: "r1", name: "Alice Johnson", email: "alice@example.com" },
-                { id: "r2", name: "Bob Smith", email: "bob@example.com" },
-                { id: "r3", name: "Charlie Brown", email: "charlie@example.com" },
-                { id: "r4", name: "Diana Prince", email: "diana@example.com" },
-                { id: "r5", name: "Edward Norton", email: "edward@example.com" }
-              ]
-            }
-          }
-        });
-
-        // Step 4: Delivery
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "deliveryForm",
-            data: {
-              scheduleType: "scheduled",
-              sendDateTime: "2026-06-01T09:00",
-              timezone: "America/New_York",
-              repeatFrequency: "once"
-            }
-          }
-        });
-
-        // Step 5: Payment
-        actions.push({
-          type: "SET_FORM",
-          payload: {
-            formId: "paymentForm",
-            data: {
-              paymentMethod: "credit-card",
-              billingEmail: "billing@karta-ai.com",
-              agreeToTerms: true
-            }
+            target: "campaignForm",
+            data: allData
           }
         });
 
@@ -447,8 +371,15 @@ Proceeding to the final review step.`;
         chatResponse = "Let's review your campaign.";
 
         if (!isCampaignPage) {
-          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns/create" } });
+          actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
         }
+
+        actions.push({
+          type: "OPEN_VIEW",
+          payload: {
+            target: "campaignForm"
+          }
+        });
 
         actions.push({
           type: "SET_STATE",

@@ -17,7 +17,9 @@ export type Action =
   | { type: "SET_STATE"; payload: { key: string; value: any } }
   | { type: "SET_FORM"; payload: { formId: string; data: any } }
   | { type: "RESET_FORM"; payload: { formId: string } }
-  | { type: "CONFIRMATION"; payload: { message: string; nextAction: Action } };
+  | { type: "CONFIRMATION"; payload: { message: string; nextAction: Action } }
+  | { type: "OPEN_VIEW"; payload: { target: string; data?: any } }
+  | { type: "UPDATE_FORM"; payload: { data: any } };
 
 // API response format (STRICT)
 export interface ChatResponse {

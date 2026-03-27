@@ -11,8 +11,7 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:push": "prisma db push",
     "postinstall": "prisma generate",
-    "db:reset": "prisma migrate reset --force",
-    "db:seed": "prisma db seed"
+    "db:reset": "prisma migrate reset --force && prisma db seed"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

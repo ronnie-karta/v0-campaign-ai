@@ -1,102 +1,302 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
-model Campaign {
-  id             String            @id @default(uuid()) @db.Uuid
-  name           String
-  description    String?
-  status         CampaignStatus    @default(Draft)
-  step           Int               @default(1)
+// --- ENUMS REPLACEMENT (SQLite doesn't support Enums) ---
 
-  // Customise
-  template       String?
-  theme          String?
-  channel        Channel
+// UserRole: ADMIN, EDITOR, VIEWER
+// PublishingStatus: DRAFT, PUBLISHED, ARCHIVED
 
-  // Recipients
-  audienceType   AudienceType      @default(Custom)
-  recipientCount Int               @default(0)
-  recipients     CampaignRecipient[]
+// --- AUTH ---
 
-  // Delivery
-  sendDate       DateTime?
-  sendTime       String?
-  timezone       String            @default("UTC")
-  deliveryStatus DeliveryStatus    @default(Pending)
+model User {
+  id                String    @id @default(cuid())
+  name              String
+  email             String    @unique
+  emailVerified     Boolean   @default(false)
+  image             String?
+  role              String    @default("viewer") // admin, parent, student, personnel, viewer, editor
+  banned            Boolean   @default(false)
+  banReason         String?
+  banExpires        DateTime?
+  mustResetPassword Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
-  // Payment
-  budget         Decimal           @db.Decimal(12, 2)
-  cost           Decimal?          @db.Decimal(12, 2)
-  paymentStatus  PaymentStatus     @default(Pending)
+  sessions  Session[]
+  accounts  Account[]
+  deletedAt DateTime? // Soft Delete
 
-  // System
-  isDraft        Boolean           @default(true)
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  @@map("Users")
+}
 
-  @@index([status])
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("Sessions")
+}
+
+model Program {
+  id String @id @default(cuid())
+
+  name        String
+  level       String?
+  description String?
+  image       String?
+  order       Int     @default(0)
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name])
+  @@map("Programs")
+}
+
+model Setting {
+  id String @id @default(cuid())
+
+  siteName        String?
+  siteDescription String?
+  logo            String?
+  contactEmail    String?
+  contactPhone    String?
+  contactAddress  String?
+  officeHours     String?
+  mapEmbedUrl     String?
+  facebookUrl     String?
+  twitterUrl      String?
+  instagramUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("Settings")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("Accounts")
+}
+
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@map("Verifications")
+}
+
+// --- CORE CONTENT: PAGES & VERSIONING ---
+
+model Page {
+  id String @id @default(cuid())
+
+  slug     String // e.g. "about-us" or "services/rfid"
+  title    String // Internal display title
+  isSystem Boolean @default(false) // Protect system pages
+
+  // Versioning Strategy
+  versions      PageVersion[]
+  liveVersionId String?       @unique // Pointer to the currently published version
+  liveVersion   PageVersion?  @relation("LiveVersion", fields: [liveVersionId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([slug])
+  @@map("Pages")
+}
+
+model PageVersion {
+  id     String @id @default(cuid())
+  pageId String
+  page   Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  // Content Fields
+  title       String // Public Page Title (H1)
+  description String?
+
+  // Relationships
+  sections Section[]
+
+  // SEO Metadata
+  seoTitle    String?
+  seoDesc     String?
+  seoKeywords String?
+  ogImage     String?
+
+  status     String @default("DRAFT") // DRAFT, PUBLISHED, ARCHIVED
+  versionNum Int    @default(1)
+
+  // Tracking
+  publishedAt DateTime?
+  createdBy   String? // ID of the editor who created this version
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Reverse relation for the live pointer
+  liveForPage Page? @relation("LiveVersion")
+
+  @@unique([pageId, versionNum])
+  @@map("PageVersions")
+}
+
+// --- COMPONENT SYSTEM ---
+
+model Section {
+  id        String      @id @default(cuid())
+  versionId String
+  version   PageVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  type  String // e.g., 'Hero', 'Features', 'TestimonialGrid', 'RichText'
+  order Int // Display order
+
+  // THE MAGIC FIELD: Stores props for the component (JSON)
+  content String // SQLite doesn't support Json type natively in Prisma, using String. In Postgres use Json.
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([versionId])
+  @@map("Sections")
+}
+
+// --- STRUCTURED CONTENT TYPES ---
+
+model Testimonial {
+  id String @id @default(cuid())
+
+  name       String
+  role       String?
+  company    String?
+  content    String
+  avatarUrl  String?
+  rating     Int     @default(5)
+  isFeatured Boolean @default(false)
+  isActive   Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("Testimonials")
+}
+
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  category  String // "general", "admissions", "programs"
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([isActive])
+  @@map("FAQs")
+}
+
+// --- ASSETS & STRUCTURED DATA ---
+
+model Media {
+  id String @id @default(cuid())
+
+  filename String
+  url      String
+  mimeType String
+  size     Int
+  altText  String?
+  width    Int?
+  height   Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("Media")
+}
+
+model Navigation {
+  id String @id @default(cuid())
+
+  code  String // e.g., 'main-header', 'footer'
+  name  String
+  items String // JSON Recursive structure: [{ label, path, children: [] }]
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([code])
+  @@map("Navigations")
+}
+
+model Inquiry {
+  id              String   @id @default(cuid())
+  referenceNumber String   @unique
+  fullName        String
+  email           String
+  contactNumber   String?
+  subject         String?
+  message         String
+  preferredMethod String?
+  status          String   @default("NEW")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
   @@index([createdAt])
-}
-
-model CampaignRecipient {
-  id         String          @id @default(uuid()) @db.Uuid
-  campaignId String          @db.Uuid
-  campaign   Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-
-  email      String?
-  phone      String?
-  name       String?
-  status     RecipientStatus @default(Pending)
-
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-
-  @@index([campaignId])
   @@index([status])
-  @@index([email])
-  @@index([phone])
+  @@index([referenceNumber])
+  @@map("Inquiries")
 }
 
-enum CampaignStatus {
-  Draft
-  Scheduled
-  Sent
-  Completed
-}
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  content     String
+  imageUrl    String?
+  category    String // "news", "events", "admissions", "activities"
+  isFeatured  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  publishedAt DateTime
+  createdAt   DateTime @default(now())
 
-enum Channel {
-  Email
-  SMS
-}
-
-enum AudienceType {
-  All
-  Segment
-  Custom
-}
-
-enum DeliveryStatus {
-  Pending
-  Scheduled
-  Sent
-  Failed
-}
-
-enum PaymentStatus {
-  Pending
-  Paid
-  Failed
-  Refunded
-}
-
-enum RecipientStatus {
-  Pending
-  Sent
-  Failed
+  @@index([category])
+  @@index([isActive])
+  @@map("Posts")
 }

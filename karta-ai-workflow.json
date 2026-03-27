@@ -1,5 +1,5 @@
 {
-  "name": "Karta AI Agent (Anthropic + Neon)",
+  "name": "Karta AI Agent (Safe Import)",
   "nodes": [
     {
       "parameters": {
@@ -7,7 +7,7 @@
         "httpMethod": "POST",
         "responseMode": "lastNode"
       },
-      "id": "webhook",
+      "id": "1",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
@@ -19,134 +19,64 @@
         "values": {
           "string": [
             { "name": "message", "value": "={{$json[\"message\"]}}" }
-          ],
-          "json": [
-            { "name": "context", "value": "={{$json[\"context\"]}}" }
           ]
         }
       },
-      "id": "set",
-      "name": "Set Context",
+      "id": "2",
+      "name": "Set Message",
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [400, 300]
     },
     {
       "parameters": {
-        "model": "claude-3-5-sonnet",
-        "messages": [
-          {
-            "role": "system",
-            "content": "You are an AI agent controlling a multi-step campaign builder. Return JSON: {\"chat\": string, \"actions\": []}. Always include SET_STATE + SET_FORM for step updates."
-          },
-          {
-            "role": "user",
-            "content": "={{$json[\"message\"]}}"
-          }
-        ]
+        "url": "https://api.anthropic.com/v1/messages",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n  \"model\": \"claude-3-5-sonnet-20241022\",\n  \"max_tokens\": 500,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": $json.message\n    }\n  ],\n  \"system\": \"You are an AI agent controlling a multi-step campaign builder. Return JSON with chat and actions. Always include SET_STATE and SET_FORM for step updates.\"\n}",
+        "headerParametersJson": "={\n  \"x-api-key\": \"YOUR_ANTHROPIC_API_KEY\",\n  \"anthropic-version\": \"2023-06-01\",\n  \"content-type\": \"application/json\"\n}"
       },
-      "id": "anthropic",
-      "name": "Claude AI",
-      "type": "n8n-nodes-base.anthropic",
-      "typeVersion": 1,
-      "position": [600, 300],
-      "credentials": {
-        "anthropicApi": {
-          "id": "YOUR_CREDENTIAL_ID",
-          "name": "Anthropic API"
-        }
-      }
+      "id": "3",
+      "name": "Anthropic API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [600, 300]
     },
     {
       "parameters": {
-        "functionCode": "const res = JSON.parse($json.content);\n\nif (!res.actions) throw new Error(\"Invalid AI response\");\n\nreturn res;"
+        "functionCode": "const content = $json.content[0].text;\nconst parsed = JSON.parse(content);\nreturn parsed;"
       },
-      "id": "validate",
-      "name": "Validate AI Response",
+      "id": "4",
+      "name": "Parse AI Response",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [800, 300]
     },
     {
-      "parameters": {
-        "conditions": {
-          "boolean": [
-            {
-              "value1": "={{$json.actions.some(a => a.type === 'RUN_WORKFLOW')}}",
-              "operation": "isTrue"
-            }
-          ]
-        }
-      },
-      "id": "switch",
-      "name": "Check Workflow",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 1,
-      "position": [1000, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "const action = $json.actions.find(a => a.type === 'RUN_WORKFLOW');\nreturn { json: action.payload };"
-      },
-      "id": "extract",
-      "name": "Extract Workflow",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [1200, 200]
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO campaigns (name) VALUES ($1) RETURNING *;",
-        "additionalFields": {
-          "queryParams": "={{[$json.data?.name || 'Untitled Campaign']}}"
-        }
-      },
-      "id": "postgres",
-      "name": "Neon Postgres",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [1400, 200],
-      "credentials": {
-        "postgres": {
-          "id": "YOUR_DB_CREDENTIAL_ID",
-          "name": "Neon DB"
-        }
-      }
-    },
-    {
       "parameters": {},
-      "id": "response",
+      "id": "5",
       "name": "Respond",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [1600, 300]
+      "position": [1000, 300]
     }
   ],
   "connections": {
     "Webhook": {
-      "main": [[{ "node": "Set Context", "type": "main", "index": 0 }]]
+      "main": [[{ "node": "Set Message", "type": "main", "index": 0 }]]
     },
-    "Set Context": {
-      "main": [[{ "node": "Claude AI", "type": "main", "index": 0 }]]
+    "Set Message": {
+      "main": [[{ "node": "Anthropic API", "type": "main", "index": 0 }]]
     },
-    "Claude AI": {
-      "main": [[{ "node": "Validate AI Response", "type": "main", "index": 0 }]]
+    "Anthropic API": {
+      "main": [[{ "node": "Parse AI Response", "type": "main", "index": 0 }]]
     },
-    "Validate AI Response": {
-      "main": [[{ "node": "Check Workflow", "type": "main", "index": 0 }]]
-    },
-    "Check Workflow": {
-      "main": [
-        [{ "node": "Extract Workflow", "type": "main", "index": 0 }],
-        [{ "node": "Respond", "type": "main", "index": 0 }]
-      ]
-    },
-    "Extract Workflow": {
-      "main": [[{ "node": "Neon Postgres", "type": "main", "index": 0 }]]
-    },
-    "Neon Postgres": {
+    "Parse AI Response": {
       "main": [[{ "node": "Respond", "type": "main", "index": 0 }]]
     }
-  }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
 }

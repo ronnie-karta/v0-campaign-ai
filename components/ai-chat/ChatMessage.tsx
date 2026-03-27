@@ -13,10 +13,10 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
 
   return (
     <div
-      className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4 animate-fade-in`}
+      className={`flex ${isUser ? "justify-end" : "justify-start"} mb-2 animate-fade-in`}
     >
       <div
-        className={`max-w-[85%] rounded-2xl px-5 py-4 shadow-sm transition-all ${
+        className={`max-w-[85%] rounded-2xl px-4 py-2.5 shadow-sm transition-all ${
           isUser
             ? "bg-gray-900 text-white rounded-br-none"
             : isError
@@ -56,7 +56,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
             ))}
           </div>
         )}
-        <div className="flex items-center gap-2 mt-3 opacity-40">
+        <div className="flex items-center gap-2 mt-1.5 opacity-40">
           <div className={`w-1 h-1 rounded-full ${isUser ? 'bg-white' : 'bg-gray-900'}`}></div>
           <span className="text-[10px] font-bold tracking-widest uppercase">
             {new Date(message.timestamp).toLocaleTimeString([], {

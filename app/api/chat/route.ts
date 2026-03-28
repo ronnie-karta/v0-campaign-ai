@@ -1,6 +1,6 @@
 export async function POST(request: Request): Promise<Response> {
   try {
-    const { message } = await request.json();
+    const { message, context } = await request.json();
 
     const webhookUrl = process.env.N8N_WEBHOOK_URL;
     if (!webhookUrl) {
@@ -13,7 +13,11 @@ export async function POST(request: Request): Promise<Response> {
     const n8nResponse = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body: message }),
+      body: JSON.stringify({
+        message,
+        messages: [{ role: "user", content: message }],
+        context: context ?? {},
+      }),
     });
 
     if (!n8nResponse.ok) {

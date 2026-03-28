@@ -47,7 +47,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         <div className="flex-1 overflow-hidden">
           <CampaignLayout />
         </div>
-        <ChatWidget />
+        {/* ChatWidget intentionally omitted — CampaignLayout has its own AI chat panel */}
         <ModalManager />
         <Toaster />
         <Analytics />

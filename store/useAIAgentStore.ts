@@ -5,6 +5,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { Message, ChatResponse, Action } from "@/lib/types";
 
 interface AIAgentState {
+  sessionId: string;
   messages: Message[];
   isLoading: boolean;
   isOpen: boolean;
@@ -30,6 +31,7 @@ interface AIAgentState {
 export const useAIAgentStore = create<AIAgentState>()(
   persist(
     (set) => ({
+      sessionId: `session-${Date.now()}-${Math.random().toString(36).slice(2)}`,
       messages: [],
       isLoading: false,
       isOpen: false,
@@ -96,6 +98,7 @@ export const useAIAgentStore = create<AIAgentState>()(
       name: "ai-agent-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
+        sessionId: state.sessionId,
         messages: state.messages,
         isOpen: state.isOpen,
         forms: state.forms,
@@ -129,6 +132,7 @@ export const useAIAgent = () => {
         },
         body: JSON.stringify({
           message: text,
+          sessionId: store.sessionId,
           context: {
             currentPage: window.location.pathname,
             activeForm: "campaignForm",

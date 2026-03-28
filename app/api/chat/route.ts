@@ -1,6 +1,6 @@
 export async function POST(request: Request): Promise<Response> {
   try {
-    const { message, context } = await request.json();
+    const { message, sessionId, context } = await request.json();
 
     const webhookUrl = process.env.N8N_WEBHOOK_URL;
     if (!webhookUrl) {
@@ -15,6 +15,7 @@ export async function POST(request: Request): Promise<Response> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message,
+        sessionId: sessionId ?? "default",
         messages: [{ role: "user", content: message }],
         context: context ?? {},
       }),

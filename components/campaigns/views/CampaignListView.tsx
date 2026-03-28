@@ -1,36 +1,47 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCampaignUIStore } from '@/store/useCampaignUIStore';
+import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
+
+interface Campaign {
+  id: string;
+  name: string;
+  channel: string;
+  recipientCount: number;
+  status: string;
+  createdAt: string;
+}
 
 export const CampaignListView = () => {
   const { setActiveView } = useCampaignUIStore();
-  const campaigns = [
-    {
-      id: 1,
-      name: 'Summer Sale 2024',
-      type: 'Email',
-      recipients: 5240,
-      status: 'Active',
-      created: '2024-03-15',
-    },
-    {
-      id: 2,
-      name: 'Product Launch',
-      type: 'Email & SMS',
-      recipients: 2100,
-      status: 'Scheduled',
-      created: '2024-03-10',
-    },
-    {
-      id: 3,
-      name: 'Holiday Promotion',
-      type: 'SMS',
-      recipients: 8900,
-      status: 'Completed',
-      created: '2024-02-20',
-    },
-  ];
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function fetchCampaigns() {
+      try {
+        const response = await fetch('/api/campaigns');
+        if (response.ok) {
+          const data = await response.json();
+          setCampaigns(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch campaigns:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchCampaigns();
+  }, []);
+
+  const handleView = (id: string) => {
+    router.push(`/campaigns/${id}`);
+  };
 
   return (
     <div className="bg-white text-gray-900 selection:bg-gray-200">
@@ -67,30 +78,49 @@ export const CampaignListView = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {campaigns.map((campaign) => (
-                  <tr key={campaign.id} className="group hover:bg-gray-50/50 transition-colors">
-                    <td className="px-8 py-6 text-sm font-bold text-gray-900">{campaign.name}</td>
-                    <td className="px-8 py-6 text-sm text-gray-500 font-medium">{campaign.type}</td>
-                    <td className="px-8 py-6 text-sm text-gray-500 font-medium">{campaign.recipients.toLocaleString()}</td>
-                    <td className="px-8 py-6">
-                      <span
-                        className={`px-3 py-1 text-[10px] font-bold tracking-wider uppercase rounded-lg border ${
-                          campaign.status === 'Active'
-                            ? 'bg-gray-900 text-white border-gray-900'
-                            : 'bg-white text-gray-500 border-gray-200'
-                        }`}
-                      >
-                        {campaign.status}
-                      </span>
-                    </td>
-                    <td className="px-8 py-6 text-sm text-gray-400 font-medium">{campaign.created}</td>
-                    <td className="px-8 py-6">
-                      <button className="text-gray-400 hover:text-gray-900 font-bold text-xs tracking-widest uppercase transition-colors">
-                        View
-                      </button>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={6} className="px-8 py-12 text-center text-gray-400">
+                      Loading campaigns...
                     </td>
                   </tr>
-                ))}
+                ) : campaigns.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-8 py-12 text-center text-gray-400">
+                      No campaigns found.
+                    </td>
+                  </tr>
+                ) : (
+                  campaigns.map((campaign) => (
+                    <tr key={campaign.id} className="group hover:bg-gray-50/50 transition-colors">
+                      <td className="px-8 py-6 text-sm font-bold text-gray-900">{campaign.name || 'Untitled Campaign'}</td>
+                      <td className="px-8 py-6 text-sm text-gray-500 font-medium">{campaign.channel || 'Not Set'}</td>
+                      <td className="px-8 py-6 text-sm text-gray-500 font-medium">{campaign.recipientCount?.toLocaleString() || 0}</td>
+                      <td className="px-8 py-6">
+                        <span
+                          className={`px-3 py-1 text-[10px] font-bold tracking-wider uppercase rounded-lg border ${
+                            campaign.status === 'Sent' || campaign.status === 'Completed'
+                              ? 'bg-gray-900 text-white border-gray-900'
+                              : 'bg-white text-gray-500 border-gray-200'
+                          }`}
+                        >
+                          {campaign.status}
+                        </span>
+                      </td>
+                      <td className="px-8 py-6 text-sm text-gray-400 font-medium">
+                        {format(new Date(campaign.createdAt), 'MMM dd, yyyy')}
+                      </td>
+                      <td className="px-8 py-6">
+                        <button 
+                          onClick={() => handleView(campaign.id)}
+                          className="text-gray-400 hover:text-gray-900 font-bold text-xs tracking-widest uppercase transition-colors"
+                        >
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

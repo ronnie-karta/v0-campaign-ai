@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 let prismaClient: any = null
 let promise: Promise<any> | null = null
 

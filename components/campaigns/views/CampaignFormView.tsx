@@ -111,17 +111,17 @@ export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
 
   return (
     <div className="bg-white text-gray-900 selection:bg-gray-200">
-      <main className="max-w-4xl mx-auto px-6 py-32">
+      <main className="max-w-4xl mx-auto px-6 py-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold tracking-tight mb-4">Campaign Builder</h1>
-          <p className="text-gray-500 max-w-lg mx-auto">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold tracking-tight mb-1">Campaign Builder</h1>
+          <p className="text-gray-500 text-sm max-w-lg mx-auto">
             Refine your message and reach your audience with absolute precision.
           </p>
         </div>
 
         {/* Step Indicator */}
-        <div className="mb-16">
+        <div className="mb-8">
           <StepIndicator steps={STEPS} currentStep={currentStep} />
         </div>
 

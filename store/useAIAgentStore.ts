@@ -129,7 +129,6 @@ export const useAIAgent = () => {
         },
         body: JSON.stringify({
           message: text,
-          messages: store.messages,
           context: {
             currentPage: window.location.pathname,
             activeForm: "campaignForm",

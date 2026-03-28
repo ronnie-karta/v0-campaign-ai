@@ -17,10 +17,34 @@ export async function POST(request: Request): Promise<Response> {
     });
 
     if (!n8nResponse.ok) {
+      const errText = await n8nResponse.text().catch(() => "");
+      console.error(`n8n webhook returned ${n8nResponse.status}:`, errText);
       throw new Error(`n8n webhook returned ${n8nResponse.status}`);
     }
 
-    const data = await n8nResponse.json();
+    // Safely read and parse the response body — n8n can return 200 with empty body
+    // when the workflow errors before reaching the Respond to Webhook node.
+    const rawText = await n8nResponse.text();
+    console.log("[n8n raw response]", rawText || "(empty)");
+
+    if (!rawText || !rawText.trim()) {
+      console.error("n8n returned empty body — check workflow execution in n8n UI");
+      return Response.json({
+        chat: "The AI workflow returned an empty response. Please check that the n8n workflow is active and the Anthropic credentials are valid.",
+        actions: [],
+      });
+    }
+
+    let data: any;
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      console.error("n8n response is not valid JSON:", rawText);
+      return Response.json({
+        chat: "The AI workflow returned an unexpected format. Please check the Respond to Webhook node in n8n.",
+        actions: [],
+      });
+    }
 
     return Response.json({
       chat: data.chat ?? "",

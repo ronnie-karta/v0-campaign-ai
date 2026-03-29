@@ -28,6 +28,14 @@ interface AIAgentState {
   resetForm: (formId: string) => void;
 }
 
+const STEP_FORM_MAP: Record<number, string> = {
+  1: "campaignForm",
+  2: "customiseForm",
+  3: "recipientsForm",
+  4: "deliveryForm",
+  5: "paymentForm",
+};
+
 export const useAIAgentStore = create<AIAgentState>()(
   persist(
     (set) => ({
@@ -135,9 +143,9 @@ export const useAIAgent = () => {
           sessionId: store.sessionId,
           context: {
             currentPage: window.location.pathname,
-            activeForm: "campaignForm",
+            activeForm: STEP_FORM_MAP[store.state.campaignStep || 1],
             currentStep: store.state.campaignStep || 1,
-            formData: store.forms.campaignForm || {},
+            formData: store.forms[STEP_FORM_MAP[store.state.campaignStep || 1]] || {},
           },
         }),
       });

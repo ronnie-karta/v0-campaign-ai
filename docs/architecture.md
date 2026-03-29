@@ -43,6 +43,14 @@ Browser
 6. `actionDispatcher` dispatches each action to the appropriate handler
 7. UI updates reactively via Zustand
 
+## Campaign Views
+
+| Route | Component | Purpose |
+|---|---|---|
+| `/campaigns` | `CampaignListView` | Lists all campaigns |
+| `/campaigns/create` | `CampaignFormView` | 5-step campaign builder |
+| `/campaigns/[id]` | `CampaignViewView` | Read-only campaign detail view |
+
 ## Campaign Builder (5 Steps)
 
 | Step | Name | Key Data |

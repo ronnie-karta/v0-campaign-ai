@@ -39,5 +39,6 @@ export const useAIAgent = () => {
     set: aiAgent.set,
     setForm: aiAgent.setForm,
     resetForm: aiAgent.resetForm,
+    resetSession: aiAgent.resetSession,
   };
 };

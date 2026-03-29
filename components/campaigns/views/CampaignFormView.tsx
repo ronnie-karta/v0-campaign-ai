@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { createCampaign, updateCampaign } from '@/lib/campaign-submit';
+import { toast } from '@/hooks/use-toast';
 import { CampaignData, INITIAL_CAMPAIGN_DATA } from '@/lib/campaign-types';
 import { StepIndicator } from '@/components/campaigns/StepIndicator';
 import { CampaignStep } from '@/components/campaigns/steps/CampaignStep';
@@ -34,7 +36,9 @@ interface CampaignFormViewProps {
 export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
   const { state = {}, forms = {}, set, setForm } = useAIAgent();
   const pathname = usePathname();
+  const router = useRouter();
   const [isLoadingCampaign, setIsLoadingCampaign] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Extract editId from pathname like /campaigns/:id/edit
   const editMatch = pathname.match(/^\/campaigns\/([^/]+)\/edit$/);
@@ -174,10 +178,31 @@ export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
     setCurrentStep(Math.max(currentStep - 1, 1));
   };
 
-  const handleSubmit = () => {
-    if (isStepValid()) {
-      console.log('Campaign submitted:', campaignData);
-      alert('Campaign created successfully! (This is a demo)');
+  const handleSubmit = async () => {
+    if (!isStepValid()) return;
+
+    setIsSubmitting(true);
+    try {
+      let campaignId: string;
+
+      if (editId) {
+        await updateCampaign(editId, campaignData);
+        campaignId = editId;
+        toast({ title: 'Campaign updated', description: 'Your campaign has been saved successfully.' });
+      } else {
+        campaignId = await createCampaign(campaignData);
+        toast({ title: 'Campaign created', description: 'Your campaign has been created successfully.' });
+      }
+
+      router.push(`/campaigns/${campaignId}`);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Something went wrong. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -266,10 +291,10 @@ export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
             {currentStep === STEPS.length ? (
               <button
                 onClick={handleSubmit}
-                disabled={!isStepValid()}
+                disabled={!isStepValid() || isSubmitting}
                 className="px-10 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold tracking-widest uppercase hover:bg-gray-800 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-all active:scale-95"
               >
-                Submit
+                {isSubmitting ? 'Submitting...' : editId ? 'Update' : 'Submit'}
               </button>
             ) : (
               <button

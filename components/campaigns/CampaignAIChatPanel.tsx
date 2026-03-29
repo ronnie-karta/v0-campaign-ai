@@ -5,9 +5,10 @@ import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatMessage } from "../ai-chat/ChatMessage";
 import { ChatInput } from "../ai-chat/ChatInput";
 import { AI_COMMANDS } from "@/lib/ai/constants";
+import { RotateCcw } from "lucide-react";
 
 export const CampaignAIChatPanel = () => {
-  const { messages, isLoading } = useAIAgent();
+  const { messages, isLoading, resetSession } = useAIAgent();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom when new messages arrive
@@ -18,12 +19,22 @@ export const CampaignAIChatPanel = () => {
   return (
     <div className="flex flex-col h-full bg-white border-l border-gray-100 overflow-hidden">
       {/* Header */}
-      <div className="bg-gray-900 px-6 py-5 text-white">
-        <h2 className="font-bold text-base tracking-tight">Karta AI Assistant</h2>
-        <div className="flex items-center gap-2 mt-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
-          <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Active on Campaigns</p>
+      <div className="bg-gray-900 px-6 py-5 text-white flex justify-between items-center">
+        <div>
+          <h2 className="font-bold text-base tracking-tight">Karta AI Assistant</h2>
+          <div className="flex items-center gap-2 mt-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+            <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Active on Campaigns</p>
+          </div>
         </div>
+        <button
+          onClick={resetSession}
+          className="p-1 hover:bg-gray-800 rounded-lg transition-colors"
+          aria-label="New session"
+          title="Start new session"
+        >
+          <RotateCcw className="w-4 h-4 text-gray-400" />
+        </button>
       </div>
 
       {/* Messages container */}

@@ -34,7 +34,7 @@ interface CampaignBuilderPageProps {
 }
 
 export function CampaignBuilderPage({ editId }: CampaignBuilderPageProps) {
-  const { state = {}, forms = {}, set, setForm } = useAIAgent();
+  const { state = {}, forms = {}, set, setForm, resetSession } = useAIAgent();
   const router = useRouter();
   const [isLoadingCampaign, setIsLoadingCampaign] = useState(!!editId);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -180,6 +180,7 @@ export function CampaignBuilderPage({ editId }: CampaignBuilderPageProps) {
         toast({ title: 'Campaign created', description: 'Your campaign has been created successfully.' });
       }
 
+      resetSession();
       router.push(`/campaigns/${campaignId}`);
     } catch (error) {
       toast({

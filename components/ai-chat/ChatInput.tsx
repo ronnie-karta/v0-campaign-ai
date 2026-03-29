@@ -14,6 +14,15 @@ export const ChatInput = () => {
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    const handler = (e: CustomEvent<string>) => {
+      setInput(e.detail);
+      inputRef.current?.focus();
+    };
+    window.addEventListener('chat:set-input', handler as EventListener);
+    return () => window.removeEventListener('chat:set-input', handler as EventListener);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 

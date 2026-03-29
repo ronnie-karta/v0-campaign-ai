@@ -60,7 +60,7 @@ export const CustomiseStep = ({ data, onChange, aiSuggestedData }: CustomiseStep
                 id="senderEmail"
                 type="email"
                 placeholder="hello@example.com"
-                value={data.senderEmail}
+                value={data.senderEmail ?? ''}
                 onChange={(e) => onChange({ senderEmail: e.target.value })}
                 className="mt-2"
               />
@@ -76,7 +76,7 @@ export const CustomiseStep = ({ data, onChange, aiSuggestedData }: CustomiseStep
               <Input
                 id="subject"
                 placeholder="e.g., Exclusive 30% Off Summer Collection"
-                value={data.subject}
+                value={data.subject ?? ''}
                 onChange={(e) => onChange({ subject: e.target.value })}
                 className="mt-2"
               />
@@ -92,7 +92,7 @@ export const CustomiseStep = ({ data, onChange, aiSuggestedData }: CustomiseStep
               <Input
                 id="previewText"
                 placeholder="e.g., Shop our collection with exclusive savings"
-                value={data.previewText}
+                value={data.previewText ?? ''}
                 onChange={(e) => onChange({ previewText: e.target.value })}
                 className="mt-2"
               />
@@ -111,7 +111,7 @@ export const CustomiseStep = ({ data, onChange, aiSuggestedData }: CustomiseStep
             <Input
               id="senderPhone"
               placeholder="+1-555-0000"
-              value={data.senderPhone}
+              value={data.senderPhone ?? ''}
               onChange={(e) => onChange({ senderPhone: e.target.value })}
               className="mt-2"
             />

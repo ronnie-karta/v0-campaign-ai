@@ -49,11 +49,11 @@ export const CampaignAIChatPanel = () => {
               <p className="text-gray-500 text-xs leading-relaxed mb-6">
                 I can help you build and manage campaigns. Try asking me to "Create a new email campaign".
               </p>
-              <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1">
+              <div className="flex flex-col items-end gap-2 max-h-[200px] overflow-y-auto pr-1">
                 {AI_COMMANDS.slice(0, 5).map((text) => (
-                  <div key={text} className="px-3 py-2 rounded-lg border border-gray-100 text-[10px] font-bold tracking-wider uppercase text-gray-400 hover:border-gray-300 hover:text-gray-900 transition-all cursor-default">
+                  <span key={text} onClick={() => window.dispatchEvent(new CustomEvent('chat:set-input', { detail: text }))} className="inline-block px-3 py-2 rounded-lg border border-gray-100 text-[10px] font-bold tracking-wider uppercase text-gray-400 hover:border-gray-300 hover:text-gray-900 transition-all cursor-pointer">
                     {text}
-                  </div>
+                  </span>
                 ))}
               </div>
             </div>

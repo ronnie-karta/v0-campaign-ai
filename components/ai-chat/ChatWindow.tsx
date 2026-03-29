@@ -50,19 +50,19 @@ export const ChatWindow = () => {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <div className="text-center max-w-[240px]">
+            <div className="text-center ">
               <div className="mb-4 text-4xl grayscale">💬</div>
-              <p className="text-gray-900 text-sm font-bold mb-2">
+              <p className="text-gray-900 text-sm font-bold mb-2 px-10">
                 System Initialized
               </p>
-              <p className="text-gray-500 text-xs leading-relaxed mb-6">
+              <p className="text-gray-500 text-xs leading-relaxed mb-6 px-10">
                 Awaiting your command. I can manage campaigns, status, and more.
               </p>
-              <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1 custom-scrollbar">
+              <div className="flex flex-col items-end gap-2 pb-2">
                 {AI_COMMANDS.slice(0, 5).map((text) => (
-                  <div key={text} className="px-3 py-2 rounded-lg border border-gray-100 text-[10px] font-bold tracking-wider uppercase text-gray-400 hover:border-gray-300 hover:text-gray-900 transition-all cursor-default">
+                  <span key={text} onClick={() => window.dispatchEvent(new CustomEvent('chat:set-input', { detail: text }))} className="inline-block px-3 py-2 rounded-lg border border-gray-100 text-[10px] font-bold tracking-wider uppercase text-gray-400 hover:border-gray-300 hover:text-gray-900 transition-all cursor-pointer">
                     {text}
-                  </div>
+                  </span>
                 ))}
               </div>
             </div>
@@ -86,7 +86,7 @@ export const ChatWindow = () => {
                       style={{ animationDelay: "0.2s" }}
                     />
                     <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400 ml-2">
-                      Processing
+                      Thinking
                     </span>
                   </div>
                 </div>

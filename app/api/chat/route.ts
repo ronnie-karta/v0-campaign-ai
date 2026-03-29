@@ -16,7 +16,6 @@ export async function POST(request: Request): Promise<Response> {
       body: JSON.stringify({
         message,
         sessionId: sessionId ?? "default",
-        messages: [{ role: "user", content: message }],
         context: context ?? {},
       }),
     });

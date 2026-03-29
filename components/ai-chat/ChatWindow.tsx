@@ -4,11 +4,11 @@ import { useEffect, useRef } from "react";
 import { useAIAgent } from "@/hooks/useAIAgent";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
-import { X } from "lucide-react";
+import { X, RotateCcw } from "lucide-react";
 import { AI_COMMANDS } from "@/lib/ai/constants";
 
 export const ChatWindow = () => {
-  const { messages, isLoading, setOpen } = useAIAgent();
+  const { messages, isLoading, setOpen, resetSession } = useAIAgent();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom when new messages arrive
@@ -27,13 +27,23 @@ export const ChatWindow = () => {
             <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">System Active</p>
           </div>
         </div>
-        <button
-          onClick={() => setOpen(false)}
-          className="p-1 hover:bg-gray-800 rounded-lg transition-colors"
-          aria-label="Close chat"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={resetSession}
+            className="p-1 hover:bg-gray-800 rounded-lg transition-colors"
+            aria-label="New session"
+            title="Start new session"
+          >
+            <RotateCcw className="w-4 h-4 text-gray-400" />
+          </button>
+          <button
+            onClick={() => setOpen(false)}
+            className="p-1 hover:bg-gray-800 rounded-lg transition-colors"
+            aria-label="Close chat"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Messages container */}

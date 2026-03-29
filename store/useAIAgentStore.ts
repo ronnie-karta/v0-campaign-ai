@@ -21,6 +21,7 @@ interface AIAgentState {
   setOpen: (isOpen: boolean) => void;
   setActiveModal: (modalId: string | null, data?: Record<string, unknown>) => void;
   clearMessages: () => void;
+  resetSession: () => void;
   addToActionQueue: (action: Action) => void;
   clearActionQueue: () => void;
   set: (key: string, value: any) => void;
@@ -75,6 +76,15 @@ export const useAIAgentStore = create<AIAgentState>()(
           messages: [],
         }),
 
+      resetSession: () =>
+        set({
+          messages: [],
+          sessionId: `session-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          actionQueue: [],
+          forms: {},
+          state: {},
+        }),
+
       addToActionQueue: (action: Action) =>
         set((state) => ({
           actionQueue: [...state.actionQueue, action],
@@ -121,6 +131,12 @@ export const useAIAgent = () => {
   const store = useAIAgentStore();
 
   const sendMessage = async (text: string) => {
+    const RESET_KEYWORDS = ["reset session", "new session", "start over", "clear chat", "clear session"];
+    if (RESET_KEYWORDS.some((kw) => text.toLowerCase().trim().includes(kw))) {
+      store.resetSession();
+      return;
+    }
+
     // Add user message immediately (optimistic UI)
     const userMessage: Message = {
       id: `msg-${Date.now()}-${Math.random()}`,
@@ -192,6 +208,7 @@ export const useAIAgent = () => {
 
   return {
     sendMessage,
+    resetSession: store.resetSession,
     messages: store.messages,
     isLoading: store.isLoading,
     isOpen: store.isOpen,

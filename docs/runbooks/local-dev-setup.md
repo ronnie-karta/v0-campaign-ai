@@ -30,6 +30,10 @@ pnpm db:seed      # seed initial data
 ### 4. Import n8n workflow
 - Open n8n at `http://localhost:5678`
 - Import `karta-ai-workflow.json`
+- In the **AI Agent** node, ensure **Prompt (User Message)** is set to:
+  ```
+  ={{ JSON.stringify($json.body) }}
+  ```
 - Activate the workflow
 
 ### 5. Start dev server

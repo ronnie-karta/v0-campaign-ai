@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { ArrowLeft, Pencil, Trash2, Users, DollarSign, CalendarDays, Send } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Recipient {
   id: string;
@@ -95,10 +96,46 @@ export const CampaignViewView = ({ id }: CampaignViewViewProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-gray-400 animate-pulse font-medium tracking-widest uppercase text-xs">
-          Loading...
-        </p>
+      <div className="bg-white text-gray-900 h-full overflow-y-auto">
+        <div className="max-w-5xl mx-auto px-6 py-8">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between mb-8">
+            <Skeleton className="h-4 w-16" />
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-9 w-24 rounded-xl" />
+            </div>
+          </div>
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-3">
+              <Skeleton className="h-6 w-20 rounded-lg" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+            <Skeleton className="h-8 w-72 mb-2" />
+            <Skeleton className="h-4 w-96" />
+          </div>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="p-5 rounded-xl border border-gray-100 bg-gray-50/30 flex flex-col gap-3">
+                <Skeleton className="h-3 w-20" />
+                <Skeleton className="h-7 w-16" />
+              </div>
+            ))}
+          </div>
+          {/* Recipients Table */}
+          <Skeleton className="h-4 w-32 mb-4" />
+          <div className="rounded-xl border border-gray-100 overflow-hidden">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex items-center gap-6 px-6 py-4 border-b border-gray-50">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-4 w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

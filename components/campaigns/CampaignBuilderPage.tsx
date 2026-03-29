@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CampaignData, INITIAL_CAMPAIGN_DATA } from '@/lib/campaign-types';
 import { createCampaign, updateCampaign } from '@/lib/campaign-submit';
 import { toast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 import { StepIndicator } from '@/components/campaigns/StepIndicator';
 import { CampaignStep } from '@/components/campaigns/steps/CampaignStep';
 import { CustomiseStep } from '@/components/campaigns/steps/CustomiseStep';
@@ -195,8 +196,39 @@ export function CampaignBuilderPage({ editId }: CampaignBuilderPageProps) {
 
   if (isLoadingCampaign) {
     return (
-      <div className="min-h-screen bg-white text-gray-900 flex items-center justify-center">
-        <p className="text-gray-400 text-sm font-medium tracking-widest uppercase">Loading campaign...</p>
+      <div className="min-h-screen bg-white text-gray-900">
+        <main className="max-w-4xl mx-auto px-6 py-32">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <Skeleton className="h-10 w-64 mx-auto mb-4" />
+            <Skeleton className="h-4 w-80 mx-auto" />
+          </div>
+          {/* Step Indicator */}
+          <div className="flex items-center justify-center gap-3 mb-16">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                {i < 4 && <Skeleton className="h-[2px] w-12" />}
+              </div>
+            ))}
+          </div>
+          {/* Form */}
+          <div className="rounded-2xl border border-gray-100 shadow-sm p-10 mb-12">
+            <Skeleton className="h-7 w-48 mb-8" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="h-4 w-28" />
+                  <Skeleton className="h-10 w-full rounded-lg" />
+                </div>
+              ))}
+            </div>
+            <div className="mt-16 pt-10 border-t border-gray-50 flex justify-between">
+              <Skeleton className="h-10 w-28 rounded-xl" />
+              <Skeleton className="h-10 w-24 rounded-xl" />
+            </div>
+          </div>
+        </main>
       </div>
     );
   }

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCampaignUIStore } from '@/store/useCampaignUIStore';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Campaign {
   id: string;
@@ -79,11 +80,18 @@ export const CampaignListView = () => {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {isLoading ? (
-                  <tr>
-                    <td colSpan={6} className="px-8 py-12 text-center text-gray-400">
-                      Loading campaigns...
-                    </td>
-                  </tr>
+                  <>
+                    {[...Array(4)].map((_, i) => (
+                      <tr key={i}>
+                        <td className="px-8 py-6"><Skeleton className="h-4 w-36" /></td>
+                        <td className="px-8 py-6"><Skeleton className="h-4 w-16" /></td>
+                        <td className="px-8 py-6"><Skeleton className="h-4 w-12" /></td>
+                        <td className="px-8 py-6"><Skeleton className="h-6 w-20 rounded-lg" /></td>
+                        <td className="px-8 py-6"><Skeleton className="h-4 w-24" /></td>
+                        <td className="px-8 py-6"><Skeleton className="h-4 w-12" /></td>
+                      </tr>
+                    ))}
+                  </>
                 ) : campaigns.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-8 py-12 text-center text-gray-400">

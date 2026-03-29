@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { createCampaign, updateCampaign } from '@/lib/campaign-submit';
 import { toast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 import { CampaignData, INITIAL_CAMPAIGN_DATA } from '@/lib/campaign-types';
 import { StepIndicator } from '@/components/campaigns/StepIndicator';
 import { CampaignStep } from '@/components/campaigns/steps/CampaignStep';
@@ -208,8 +209,39 @@ export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
 
   if (isLoadingCampaign) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-gray-400 text-sm font-medium tracking-widest uppercase">Loading campaign...</p>
+      <div className="bg-white text-gray-900">
+        <main className="max-w-4xl mx-auto px-6 py-8">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <Skeleton className="h-7 w-48 mx-auto mb-2" />
+            <Skeleton className="h-4 w-72 mx-auto" />
+          </div>
+          {/* Step Indicator */}
+          <div className="flex items-center justify-center gap-3 mb-8">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <Skeleton className="h-8 w-8 rounded-full" />
+                {i < 4 && <Skeleton className="h-[2px] w-10" />}
+              </div>
+            ))}
+          </div>
+          {/* Form */}
+          <div className="rounded-2xl border border-gray-100 shadow-sm p-10 mb-12">
+            <Skeleton className="h-6 w-40 mb-8" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="h-4 w-28" />
+                  <Skeleton className="h-10 w-full rounded-lg" />
+                </div>
+              ))}
+            </div>
+            <div className="mt-16 pt-10 border-t border-gray-50 flex justify-between">
+              <Skeleton className="h-10 w-28 rounded-xl" />
+              <Skeleton className="h-10 w-24 rounded-xl" />
+            </div>
+          </div>
+        </main>
       </div>
     );
   }

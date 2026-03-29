@@ -34,12 +34,9 @@ const ITEMS_PER_PAGE = 10;
 export const PaymentStep = ({ data, onChange }: PaymentStepProps) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const calculateCost = (): number => {
-    const baseRate = data.campaignType === 'email' ? 0.01 : 0.05;
-    return Math.round(data.recipients.length * baseRate * 100) / 100;
-  };
-
-  const cost = calculateCost();
+  const perRecipientRate = data.campaignType === 'email' ? 0.01 : 0.05;
+  const serviceFee = Math.round(data.recipients.length * perRecipientRate * 100) / 100;
+  const total = (data.budget || 0) + serviceFee;
 
   const totalPages = Math.ceil(data.recipients.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -277,12 +274,18 @@ export const PaymentStep = ({ data, onChange }: PaymentStepProps) => {
             <div className="bg-purple-900 text-white rounded-2xl p-8 shadow-xl shadow-purple-100">
               <p className="text-purple-300 text-[10px] font-bold tracking-widest uppercase mb-2">Total Amount Due</p>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold">${cost.toFixed(2)}</span>
+                <span className="text-4xl font-bold">${total.toFixed(2)}</span>
                 <span className="text-purple-300 text-sm">USD</span>
               </div>
-              <div className="mt-6 pt-6 border-t border-purple-800 flex justify-between items-center text-sm">
-                <span className="text-purple-200">Processing Fee</span>
-                <span className="font-mono">$0.00</span>
+              <div className="mt-6 pt-6 border-t border-purple-800 space-y-3 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-purple-200">Campaign Budget</span>
+                  <span className="font-mono">${(data.budget || 0).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-purple-200">Service Fee ({data.recipients.length} × ${perRecipientRate.toFixed(2)})</span>
+                  <span className="font-mono">${serviceFee.toFixed(2)}</span>
+                </div>
               </div>
             </div>
 
@@ -349,7 +352,7 @@ export const PaymentStep = ({ data, onChange }: PaymentStepProps) => {
                     htmlFor="agreeTerms"
                     className="text-xs text-gray-600 leading-relaxed cursor-pointer font-normal"
                   >
-                    I acknowledge and agree to Karta AI's <span className="text-purple-600 font-bold underline">Terms of Service</span> and <span className="text-purple-600 font-bold underline">Privacy Policy</span>. I authorize a one-time charge of <span className="font-bold text-gray-900">${cost.toFixed(2)}</span>.
+                    I acknowledge and agree to Karta AI's <span className="text-purple-600 font-bold underline">Terms of Service</span> and <span className="text-purple-600 font-bold underline">Privacy Policy</span>. I authorize a one-time charge of <span className="font-bold text-gray-900">${total.toFixed(2)}</span>.
                   </label>
                 </div>
               </div>

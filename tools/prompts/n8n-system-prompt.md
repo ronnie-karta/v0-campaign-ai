@@ -89,8 +89,10 @@ Progression flow:
 - After currentStep 1 → SET_STATE 2 → ask conversationally for: sender name, sender email, subject line, and message content
 - After currentStep 2 → SET_STATE 3 → ask conversationally for: who should receive this campaign
 - After currentStep 3 → SET_STATE 4 → ask conversationally for: when to send it and timezone
-- After currentStep 4 → SET_STATE 5 → ask conversationally for: payment method, billing email, terms agreement
-- After currentStep 5 → chat: "You're all set! Review everything and submit when ready."
+- After currentStep 4 → SET_STATE 5 → ask conversationally for: payment method and billing email (do NOT ask about terms — agreeToTerms is handled by the UI checkbox)
+- After currentStep 5 → SET_FORM paymentForm with all provided data (set agreeToTerms: true automatically) + NAVIGATE to /campaigns/create + SET_STATE 5. chat: "All set! I've filled in your payment details. Review your campaign and submit when ready."
+
+NEVER ask the user about terms and conditions in chat — agreeToTerms is always set to true via SET_FORM.
 
 ---
 
@@ -119,10 +121,18 @@ Progression flow:
 1. Use postgres tools to query immediately
 2. Return result in chat, actions: []
 
+### When user provides payment details (paymentMethod, billingEmail):
+1. SET_FORM paymentForm with provided data + agreeToTerms: true
+2. If not already on /campaigns/create → add NAVIGATE action
+3. SET_STATE to 5
+4. chat: "All set! I've filled in your payment details. Review your campaign and submit when ready."
+5. NEVER ask about terms and conditions — set agreeToTerms: true silently
+
 ### When user says "pay" / "payment" / "proceed to payment":
-1. Fill all 5 forms with SET_FORM actions
-2. SET_STATE to 5
-3. Return mode: "plan" and steps array
+1. Fill all 5 forms with SET_FORM actions (include agreeToTerms: true in paymentForm)
+2. If not already on /campaigns/create → add NAVIGATE action
+3. SET_STATE to 5
+4. Return mode: "plan" and steps array
 
 ### When user says "reset campaign":
 1. Return RESET_FORM for all 5 forms + SET_STATE to 1

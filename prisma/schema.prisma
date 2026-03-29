@@ -17,6 +17,12 @@ model Campaign {
   template       String?
   theme          String?
   channel        Channel?
+  senderName     String?
+  senderEmail    String?
+  senderPhone    String?
+  subject        String?
+  previewText    String?
+  messageContent String?           @db.Text
 
   // Recipients
   audienceType   AudienceType      @default(Custom)

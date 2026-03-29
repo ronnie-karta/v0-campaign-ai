@@ -13,7 +13,7 @@ import { useCampaignUIStore } from "@/store/useCampaignUIStore";
 export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-  const isCreateRoute = pathname === "/campaigns/create";
+  const isCampaignBuilderRoute = pathname === "/campaigns/create" || /^\/campaigns\/[^/]+\/edit$/.test(pathname);
   const { setActiveView } = useCampaignUIStore();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 
   // Sync active view based on initial route
   useEffect(() => {
-    if (pathname === "/campaigns/create") {
+    if (isCampaignBuilderRoute) {
       setActiveView("campaignForm");
     } else if (pathname === "/campaigns") {
       setActiveView("campaignList");
@@ -39,7 +39,7 @@ export const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (isCreateRoute) {
+  if (isCampaignBuilderRoute) {
     return (
       <div className="flex flex-col h-screen overflow-hidden bg-white">
         <Header />

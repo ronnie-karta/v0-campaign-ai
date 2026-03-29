@@ -84,7 +84,11 @@ export default function CampaignsPage() {
                 ) : (
                   campaigns.map((campaign) => (
                     <tr key={campaign.id} className="group hover:bg-gray-50/50 transition-colors">
-                      <td className="px-8 py-6 text-sm font-bold text-gray-900">{campaign.name || 'Untitled Campaign'}</td>
+                      <td className="px-8 py-6 text-sm font-bold text-gray-900">
+                        <Link href={`/campaigns/${campaign.id}`} className="hover:underline underline-offset-4">
+                          {campaign.name || 'Untitled Campaign'}
+                        </Link>
+                      </td>
                       <td className="px-8 py-6 text-sm text-gray-500 font-medium">{campaign.channel || 'Not Set'}</td>
                       <td className="px-8 py-6 text-sm text-gray-500 font-medium">{campaign.recipientCount?.toLocaleString() || 0}</td>
                       <td className="px-8 py-6">
@@ -102,7 +106,7 @@ export default function CampaignsPage() {
                         {format(new Date(campaign.createdAt), 'MMM dd, yyyy')}
                       </td>
                       <td className="px-8 py-6">
-                        <Link href={`/campaigns/create?id=${campaign.id}`}>
+                        <Link href={campaign.status === 'Draft' ? `/campaigns/${campaign.id}/edit` : `/campaigns/${campaign.id}`}>
                           <button className="text-gray-400 hover:text-gray-900 font-bold text-xs tracking-widest uppercase transition-colors">
                             {campaign.status === 'Draft' ? 'Edit' : 'View'}
                           </button>

@@ -130,7 +130,7 @@ export const CampaignViewView = ({ id }: CampaignViewViewProps) => {
               {isDeleting ? 'Deleting...' : 'Delete'}
             </button>
             <button
-              onClick={() => router.push(`/campaigns/create?id=${campaign.id}`)}
+              onClick={() => router.push(`/campaigns/${campaign.id}/edit`)}
               className="flex items-center gap-1.5 bg-gray-900 text-white px-5 py-2.5 rounded-xl text-xs font-bold tracking-widest uppercase hover:bg-gray-800 transition-all"
             >
               <Pencil className="w-3.5 h-3.5" />

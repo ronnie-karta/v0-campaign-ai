@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { CampaignData, INITIAL_CAMPAIGN_DATA } from '@/lib/campaign-types';
 import { StepIndicator } from '@/components/campaigns/StepIndicator';
 import { CampaignStep } from '@/components/campaigns/steps/CampaignStep';
@@ -27,22 +26,17 @@ const FORM_IDS = [
   'paymentForm',
 ];
 
-interface CampaignFormViewProps {
-  data?: Record<string, any>;
+interface CampaignBuilderPageProps {
+  editId?: string;
 }
 
-export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
+export function CampaignBuilderPage({ editId }: CampaignBuilderPageProps) {
   const { state = {}, forms = {}, set, setForm } = useAIAgent();
-  const pathname = usePathname();
-  const [isLoadingCampaign, setIsLoadingCampaign] = useState(false);
-
-  // Extract editId from pathname like /campaigns/:id/edit
-  const editMatch = pathname.match(/^\/campaigns\/([^/]+)\/edit$/);
-  const editId = editMatch?.[1] || null;
+  const [isLoadingCampaign, setIsLoadingCampaign] = useState(!!editId);
 
   const currentStep = state.campaignStep || 1;
 
-  // Source of truth is the AIAgent store. AI suggestions from props are used for highlighting.
+  // Aggregate campaign data from all 5 form IDs
   const campaignData: CampaignData = {
     ...INITIAL_CAMPAIGN_DATA,
     ...(forms.campaignForm || {}),
@@ -50,20 +44,15 @@ export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
     ...(forms.recipientsForm || {}),
     ...(forms.deliveryForm || {}),
     ...(forms.paymentForm || {}),
-    // Map AI extracted fields if they are present in the form state
-    campaignName: forms.campaignForm?.campaignName || forms.campaignForm?.name || INITIAL_CAMPAIGN_DATA.campaignName,
-    messageContent: forms.customiseForm?.messageContent || forms.customiseForm?.message || INITIAL_CAMPAIGN_DATA.messageContent,
-    sendDateTime: forms.deliveryForm?.sendDateTime || forms.deliveryForm?.date || INITIAL_CAMPAIGN_DATA.sendDateTime,
-    paymentMethod: forms.paymentForm?.paymentMethod || forms.paymentForm?.method || INITIAL_CAMPAIGN_DATA.paymentMethod,
+    campaignName: forms.campaignForm?.name || forms.campaignForm?.campaignName || INITIAL_CAMPAIGN_DATA.campaignName,
+    messageContent: forms.customiseForm?.message || forms.customiseForm?.messageContent || INITIAL_CAMPAIGN_DATA.messageContent,
+    sendDateTime: forms.deliveryForm?.date || forms.deliveryForm?.sendDateTime || INITIAL_CAMPAIGN_DATA.sendDateTime,
+    paymentMethod: forms.paymentForm?.method || forms.paymentForm?.paymentMethod || INITIAL_CAMPAIGN_DATA.paymentMethod,
   };
 
   // Load existing campaign data when editing
   useEffect(() => {
     if (!editId) return;
-    // Skip if already loaded for this campaign
-    if (state.editingCampaignId === editId) return;
-
-    setIsLoadingCampaign(true);
 
     async function loadCampaign() {
       try {
@@ -118,22 +107,18 @@ export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
     }
 
     loadCampaign();
-  }, [editId, state.editingCampaignId, set, setForm]);
+  }, [editId, set, setForm]);
 
+  // Sync state if empty (only for new campaigns)
   useEffect(() => {
     if (editId) return;
     if (!state.campaignStep) {
       set('campaignStep', 1);
     }
-  }, [editId, state.campaignStep, set]);
-
-  // If data from AI changes, we might want to update the AI agent store too
-  useEffect(() => {
-    if (data && Object.keys(data).length > 0) {
-      // Logic to merge data into appropriate forms
-      // For now, we'll let the CampaignContentPanel handle the passing of data
+    if (!forms.campaignForm) {
+      setForm('campaignForm', {});
     }
-  }, [data]);
+  }, [editId, state.campaignStep, forms.campaignForm, set, setForm]);
 
   const setCurrentStep = (step: number) => {
     set('campaignStep', step);
@@ -183,69 +168,64 @@ export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
 
   if (isLoadingCampaign) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="min-h-screen bg-white text-gray-900 flex items-center justify-center">
         <p className="text-gray-400 text-sm font-medium tracking-widest uppercase">Loading campaign...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white text-gray-900 selection:bg-gray-200">
-      <main className="max-w-4xl mx-auto px-6 py-8">
+    <div className="min-h-screen bg-white text-gray-900 selection:bg-gray-200">
+      <main className="max-w-4xl mx-auto px-6 py-32">
         {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold tracking-tight mb-1">
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold tracking-tight mb-4">
             {editId ? 'Edit Campaign' : 'Campaign Builder'}
           </h1>
-          <p className="text-gray-500 text-sm max-w-lg mx-auto">
+          <p className="text-gray-500 max-w-lg mx-auto">
             Refine your message and reach your audience with absolute precision.
           </p>
         </div>
 
         {/* Step Indicator */}
-        <div className="mb-8">
+        <div className="mb-16">
           <StepIndicator steps={STEPS} currentStep={currentStep} />
         </div>
 
         {/* Form Container */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 mb-12">
-          {/* Step 1: Campaign */}
           {currentStep === 1 && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
               <h2 className="text-2xl font-bold tracking-tight mb-8">1. Identity & Goals</h2>
-              <CampaignStep data={campaignData} onChange={handleDataChange} aiSuggestedData={data} />
+              <CampaignStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
-          {/* Step 2: Customise */}
           {currentStep === 2 && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
               <h2 className="text-2xl font-bold tracking-tight mb-8">2. Creative Content</h2>
-              <CustomiseStep data={campaignData} onChange={handleDataChange} aiSuggestedData={data} />
+              <CustomiseStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
-          {/* Step 3: Recipients */}
           {currentStep === 3 && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
               <h2 className="text-2xl font-bold tracking-tight mb-8">3. Target Audience</h2>
-              <RecipientsStep data={campaignData} onChange={handleDataChange} aiSuggestedData={data} />
+              <RecipientsStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
-          {/* Step 4: Delivery */}
           {currentStep === 4 && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
               <h2 className="text-2xl font-bold tracking-tight mb-8">4. Logistics</h2>
-              <DeliveryStep data={campaignData} onChange={handleDataChange} aiSuggestedData={data} />
+              <DeliveryStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
-          {/* Step 5: Payment */}
           {currentStep === 5 && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
               <h2 className="text-2xl font-bold tracking-tight mb-8">5. Final Review</h2>
-              <PaymentStep data={campaignData} onChange={handleDataChange} aiSuggestedData={data} />
+              <PaymentStep data={campaignData} onChange={handleDataChange} />
             </div>
           )}
 
@@ -292,4 +272,4 @@ export const CampaignFormView = ({ data }: CampaignFormViewProps) => {
       </main>
     </div>
   );
-};
+}

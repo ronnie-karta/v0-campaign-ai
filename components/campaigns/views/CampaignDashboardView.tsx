@@ -15,7 +15,7 @@ export const CampaignDashboardView = () => {
           </div>
           <h1 className="text-6xl font-bold tracking-tight mb-6">Campaign Center</h1>
           <p className="text-xl text-gray-500 max-w-lg mx-auto leading-relaxed">
-            Harness the power of Karta AI to create, scale, and optimize your marketing operations.
+            Harness the power of Campaign AI to create, scale, and optimize your marketing operations.
           </p>
         </div>
 

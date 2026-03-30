@@ -1,4 +1,4 @@
-# Karta AI Chat System Documentation
+# Campaign AI Chat System Documentation
 
 ## Overview
 

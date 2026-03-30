@@ -10,7 +10,7 @@ export const Header = () => {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-900 text-white font-bold transition-transform group-hover:scale-105">
             K
           </div>
-          <span className="text-lg font-bold tracking-tight">Karta AI</span>
+          <span className="text-lg font-bold tracking-tight">Campaign AI</span>
         </Link>
         <div className="flex items-center gap-8">
           <Link

@@ -352,7 +352,7 @@ export const PaymentStep = ({ data, onChange }: PaymentStepProps) => {
                     htmlFor="agreeTerms"
                     className="text-xs text-gray-600 leading-relaxed cursor-pointer font-normal"
                   >
-                    I acknowledge and agree to Karta AI's <span className="text-purple-600 font-bold underline">Terms of Service</span> and <span className="text-purple-600 font-bold underline">Privacy Policy</span>. I authorize a one-time charge of <span className="font-bold text-gray-900">${total.toFixed(2)}</span>.
+                    I acknowledge and agree to Campaign AI's <span className="text-purple-600 font-bold underline">Terms of Service</span> and <span className="text-purple-600 font-bold underline">Privacy Policy</span>. I authorize a one-time charge of <span className="font-bold text-gray-900">${total.toFixed(2)}</span>.
                   </label>
                 </div>
               </div>

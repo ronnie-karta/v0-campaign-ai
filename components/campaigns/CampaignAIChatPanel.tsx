@@ -21,7 +21,7 @@ export const CampaignAIChatPanel = () => {
       {/* Header */}
       <div className="bg-gray-900 px-6 py-5 text-white flex justify-between items-center">
         <div>
-          <h2 className="font-bold text-base tracking-tight">Karta AI Assistant</h2>
+          <h2 className="font-bold text-base tracking-tight">Campaign AI Assistant</h2>
           <div className="flex items-center gap-2 mt-1">
             <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
             <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Active on Campaigns</p>

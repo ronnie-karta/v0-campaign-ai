@@ -111,7 +111,7 @@ export default function Home() {
                 Command the system with natural language.
               </h2>
               <p className="text-gray-500 leading-relaxed">
-                Jules, your Karta AI assistant, translates your intent directly into professional UI actions. 
+                Jules, your Campaign AI assistant, translates your intent directly into professional UI actions. 
                 Try these commands in the chat widget to experience high-scale automation.
               </p>
               <div className="pt-4">
@@ -208,7 +208,7 @@ export default function Home() {
             K
           </div>
           <p className="text-sm text-gray-400">
-            © 2026 Karta AI. Engineered for the modern enterprise.
+            © 2026 Campaign AI. Engineered for the modern enterprise.
           </p>
           <div className="flex gap-8 text-xs font-medium text-gray-400">
             <a href="#" className="hover:text-gray-900 transition-colors">Privacy Policy</a>

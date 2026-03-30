@@ -1,7 +1,7 @@
-# Karta AI — Claude Project Memory
+# Campaign AI — Claude Project Memory
 
 ## Project Overview
-Karta AI is a Next.js 14 marketing campaign platform with an AI chat assistant powered by n8n workflows. Users create and manage campaigns through a multi-step form guided by an AI chat interface.
+Campaign AI is a Next.js 14 marketing campaign platform with an AI chat assistant powered by n8n workflows. Users create and manage campaigns through a multi-step form guided by an AI chat interface.
 
 ## Tech Stack
 - **Framework**: Next.js 14 (App Router, Turbopack)

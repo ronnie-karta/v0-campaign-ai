@@ -1,4 +1,4 @@
-# Karta AI — Architecture Overview
+# Campaign AI — Architecture Overview
 
 ## System Diagram
 

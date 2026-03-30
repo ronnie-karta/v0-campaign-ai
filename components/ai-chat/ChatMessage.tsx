@@ -1,5 +1,7 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Message } from "@/lib/types";
 
 interface ChatMessageProps {
@@ -8,7 +10,8 @@ interface ChatMessageProps {
 
 export const ChatMessage = ({ message }: ChatMessageProps) => {
   const isUser = message.role === "user";
-  const isError = message.content?.toLowerCase().includes("error") ||
+  const isError =
+    message.content?.toLowerCase().includes("error") ||
     message.content?.toLowerCase().includes("sorry");
 
   return (
@@ -24,9 +27,17 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
               : "bg-gray-100 text-gray-900 rounded-bl-none border border-transparent"
         }`}
       >
-        <p className="text-sm leading-relaxed break-words whitespace-pre-wrap font-medium overflow-wrap-anywhere [overflow-wrap:anywhere]">
-          {message.content}
-        </p>
+        {isUser ? (
+          <p className="text-sm leading-relaxed break-words whitespace-pre-wrap font-medium overflow-wrap-anywhere [overflow-wrap:anywhere]">
+            {message.content}
+          </p>
+        ) : (
+          <div className="text-sm leading-relaxed break-words font-medium prose prose-sm max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:my-1 prose-strong:font-bold prose-code:bg-gray-200 prose-code:px-1 prose-code:rounded prose-code:text-xs prose-table:text-xs prose-th:py-1 prose-th:px-2 prose-td:py-1 prose-td:px-2">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {message.content}
+            </ReactMarkdown>
+          </div>
+        )}
 
         {message.mode === "plan" && message.steps && (
           <div className="mt-4 pt-4 border-t border-gray-200/50 space-y-3">
@@ -56,8 +67,9 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
             ))}
           </div>
         )}
+
         <div className="flex items-center gap-2 mt-1.5 opacity-40">
-          <div className={`w-1 h-1 rounded-full ${isUser ? 'bg-white' : 'bg-gray-900'}`}></div>
+          <div className={`w-1 h-1 rounded-full ${isUser ? "bg-white" : "bg-gray-900"}`}></div>
           <span className="text-[10px] font-bold tracking-widest uppercase">
             {new Date(message.timestamp).toLocaleTimeString([], {
               hour: "2-digit",

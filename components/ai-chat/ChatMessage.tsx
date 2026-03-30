@@ -16,7 +16,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
       className={`flex ${isUser ? "justify-end" : "justify-start"} mb-2 animate-fade-in`}
     >
       <div
-        className={`max-w-[85%] rounded-2xl px-4 py-2.5 shadow-sm transition-all ${
+        className={`max-w-[85%] min-w-0 rounded-2xl px-4 py-2.5 shadow-sm transition-all ${
           isUser
             ? "bg-gray-900 text-white rounded-br-none"
             : isError
@@ -24,7 +24,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
               : "bg-gray-100 text-gray-900 rounded-bl-none border border-transparent"
         }`}
       >
-        <p className="text-sm leading-relaxed break-words whitespace-pre-wrap font-medium">
+        <p className="text-sm leading-relaxed break-words whitespace-pre-wrap font-medium overflow-wrap-anywhere [overflow-wrap:anywhere]">
           {message.content}
         </p>
 

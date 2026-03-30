@@ -1,10 +1,10 @@
 # Campaign AI — Claude Project Memory
 
 ## Project Overview
-Campaign AI is a Next.js 14 marketing campaign platform with an AI chat assistant powered by n8n workflows. Users create and manage campaigns through a multi-step form guided by an AI chat interface.
+Campaign AI is a Next.js 16 marketing campaign platform with an AI chat assistant powered by n8n workflows. Users create and manage campaigns through a multi-step form guided by an AI chat interface.
 
 ## Tech Stack
-- **Framework**: Next.js 14 (App Router, Turbopack)
+- **Framework**: Next.js 16 (App Router, Turbopack)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS + shadcn/ui
 - **Database**: PostgreSQL via Prisma ORM

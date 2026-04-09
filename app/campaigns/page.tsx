@@ -45,6 +45,7 @@ export default function CampaignsPage() {
             <h1 className="text-5xl font-bold tracking-tight mb-4">Campaigns</h1>
             <p className="text-gray-500 max-w-lg">
               Precision targeting and real-time analytics for your high-end marketing operations.
+              shit dev
             </p>
           </div>
           <Link href="/campaigns/create">

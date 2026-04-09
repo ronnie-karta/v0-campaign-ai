@@ -50,7 +50,7 @@ export default function CampaignsPage() {
           <Link href="/campaigns/create">
             <button className="bg-gray-900 text-white px-8 py-4 rounded-xl font-medium hover:bg-gray-800 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm flex items-center gap-2">
               <span>+</span>
-              <span>Create Campaign</span>
+              <span>Create Campiagn</span>
             </button>
           </Link>
         </div>

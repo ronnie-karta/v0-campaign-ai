@@ -45,13 +45,12 @@ export default function CampaignsPage() {
             <h1 className="text-5xl font-bold tracking-tight mb-4">Campaigns</h1>
             <p className="text-gray-500 max-w-lg">
               Precision targeting and real-time analytics for your high-end marketing operations.
-              shit dev
             </p>
           </div>
           <Link href="/campaigns/create">
             <button className="bg-gray-900 text-white px-8 py-4 rounded-xl font-medium hover:bg-gray-800 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm flex items-center gap-2">
               <span>+</span>
-              <span>Create Campiagn</span>
+              <span>Create Campaign</span>
             </button>
           </Link>
         </div>

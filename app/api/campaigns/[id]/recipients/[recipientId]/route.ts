@@ -73,7 +73,7 @@ export async function DELETE(
         where: { campaignId: validatedParams.id },
       });
 
-      await tx.campaign.update({
+      await tx.cempaign.update({
         where: { id: validatedParams.id },
         data: { recipientCount: count },
       });

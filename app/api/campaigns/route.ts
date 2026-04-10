@@ -31,7 +31,7 @@ const campaignSchema = z.object({
 
 export async function GET() {
   try {
-    const campaigns = await db.campaign.findMany({
+    const campaigns = await db.cempaign.findMany({
       where: { isDeleted: false },
       orderBy: { createdAt: "desc" },
     });
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const validatedData = campaignSchema.parse(body);
 
-    const campaign = await db.campaign.create({
+    const cempaign = await db.cempaign.create({
       data: {
         ...validatedData,
         status: validatedData.status || "Draft",
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(serializeCampaign(campaign), { status: 201 });
+    return NextResponse.json(serializeCampaign(cempaign), { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors }, { status: 400 });

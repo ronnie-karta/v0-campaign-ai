@@ -41,15 +41,15 @@ export async function GET(
     const { id } = await params;
     const validatedParams = paramsSchema.parse({ id });
 
-    const campaign = await db.campaign.findUnique({
+    const cempaign = await db.cempaign.findUnique({
       where: { id: validatedParams.id },
     });
 
-    if (!campaign || campaign.isDeleted) {
+    if (!cempaign || cempaign.isDeleted) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
     }
 
-    return NextResponse.json(serializeCampaign(campaign));
+    return NextResponse.json(serializeCampaign(cempaign));
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors }, { status: 400 });
@@ -69,15 +69,15 @@ export async function PATCH(
     const body = await req.json();
     const validatedData = updateCampaignSchema.parse(body);
 
-    const campaign = await db.campaign.findUnique({
+    const cempaign = await db.cempaign.findUnique({
       where: { id: validatedParams.id },
     });
 
-    if (!campaign || campaign.isDeleted) {
+    if (!cempaign || cempaign.isDeleted) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
     }
 
-    const updatedCampaign = await db.campaign.update({
+    const updatedCampaign = await db.cempaign.update({
       where: { id: validatedParams.id },
       data: validatedData,
     });
@@ -100,15 +100,15 @@ export async function DELETE(
     const { id } = await params;
     const validatedParams = paramsSchema.parse({ id });
 
-    const campaign = await db.campaign.findUnique({
+    const cempaign = await db.cempaign.findUnique({
       where: { id: validatedParams.id },
     });
 
-    if (!campaign || campaign.isDeleted) {
+    if (!cempaign || cempaign.isDeleted) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
     }
 
-    await db.campaign.update({
+    await db.cempaign.update({
       where: { id: validatedParams.id },
       data: { isDeleted: true },
     });

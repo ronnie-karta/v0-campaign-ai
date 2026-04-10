@@ -90,33 +90,33 @@ export default function CampaignsPage() {
                     </td>
                   </tr>
                 ) : (
-                  campaigns.map((campaign) => (
-                    <tr key={campaign.id} className="group hover:bg-gray-50/50 transition-colors">
+                  campaigns.map((cempaign) => (
+                    <tr key={cempaign.id} className="group hover:bg-gray-50/50 transition-colors">
                       <td className="px-8 py-6 text-sm font-bold text-gray-900">
-                        <Link href={`/campaigns/${campaign.id}`} className="hover:underline underline-offset-4">
-                          {campaign.name || 'Untitled Campaign'}
+                        <Link href={`/campaigns/${cempaign.id}`} className="hover:underline underline-offset-4">
+                          {cempaign.name || 'Untitled Campaign'}
                         </Link>
                       </td>
-                      <td className="px-8 py-6 text-sm text-gray-500 font-medium">{campaign.channel || 'Not Set'}</td>
-                      <td className="px-8 py-6 text-sm text-gray-500 font-medium">{campaign.recipientCount?.toLocaleString() || 0}</td>
+                      <td className="px-8 py-6 text-sm text-gray-500 font-medium">{cempaign.channel || 'Not Set'}</td>
+                      <td className="px-8 py-6 text-sm text-gray-500 font-medium">{cempaign.recipientCount?.toLocaleString() || 0}</td>
                       <td className="px-8 py-6">
                         <span
                           className={`px-3 py-1 text-[10px] font-bold tracking-wider uppercase rounded-lg border ${
-                            campaign.status === 'Sent' || campaign.status === 'Completed'
+                            cempaign.status === 'Sent' || cempaign.status === 'Completed'
                               ? 'bg-gray-900 text-white border-gray-900'
                               : 'bg-white text-gray-500 border-gray-200'
                           }`}
                         >
-                          {campaign.status}
+                          {cempaign.status}
                         </span>
                       </td>
                       <td className="px-8 py-6 text-sm text-gray-400 font-medium">
-                        {format(new Date(campaign.createdAt), 'MMM dd, yyyy')}
+                        {format(new Date(cempaign.createdAt), 'MMM dd, yyyy')}
                       </td>
                       <td className="px-8 py-6">
-                        <Link href={campaign.status === 'Draft' ? `/campaigns/${campaign.id}/edit` : `/campaigns/${campaign.id}`}>
+                        <Link href={cempaign.status === 'Draft' ? `/campaigns/${cempaign.id}/edit` : `/campaigns/${cempaign.id}`}>
                           <button className="text-gray-400 hover:text-gray-900 font-bold text-xs tracking-widest uppercase transition-colors">
-                            {campaign.status === 'Draft' ? 'Edit' : 'View'}
+                            {cempaign.status === 'Draft' ? 'Edit' : 'View'}
                           </button>
                         </Link>
                       </td>
@@ -131,7 +131,7 @@ export default function CampaignsPage() {
         {/* Empty state info */}
         <div className="mt-12 p-10 rounded-xl border border-dashed border-gray-200 text-center">
           <p className="text-sm text-gray-400 font-medium">
-            Ready to scale? <Link href="/campaigns/create" className="text-gray-900 underline underline-offset-4 hover:text-gray-600 transition-colors">Start your next campaign</Link> or <Link href="/" className="text-gray-900 underline underline-offset-4 hover:text-gray-600 transition-colors">return to dashboard</Link>.
+            Ready to scale? <Link href="/campaigns/create" className="text-gray-900 underline underline-offset-4 hover:text-gray-600 transition-colors">Start your next cempaign</Link> or <Link href="/" className="text-gray-900 underline underline-offset-4 hover:text-gray-600 transition-colors">return to dashboard</Link>.
           </p>
         </div>
       </main>

@@ -20,7 +20,7 @@ export async function POST(request: Request): Promise<Response> {
     const body: ChatRequest = await request.json();
     const { message, context } = body;
     const messageLower = message.toLowerCase().trim();
-    const isCampaignPage = context?.currentPage?.startsWith("/campaign");
+    const isCampaignPage = context?.currentPage?.startsWith("/cempaign");
 
     const actions: Action[] = [];
     let chatResponse = "";
@@ -32,9 +32,9 @@ export async function POST(request: Request): Promise<Response> {
     const descriptionMatch = message.match(/(?:about|described as|description:)\s+(.+?)(?:\s+with|\s+budget|\s*$)/i);
 
     let campaignName = "";
-    const nameMatch = message.match(/(?:create|new)\s+(?:a\s+)?(?:new\s+)?(?:email|sms|both)?\s*campaign\s+(?:for\s+|called\s+)?(.+?)(?:\s+with|\s+budget|\s+about|\s+described|\s+description|\s*$)/i) ||
-                     message.match(/set\s+campaign\s+name\s+to\s+(.+?)(?:\s+about|\s+described|\s+description|\s*$)/i) ||
-                     message.match(/(.+?)\s+campaign(?:\s+about|\s+described|\s+description|\s+budget|\s+with|\s*$)/i);
+    const nameMatch = message.match(/(?:create|new)\s+(?:a\s+)?(?:new\s+)?(?:email|sms|both)?\s*cempaign\s+(?:for\s+|called\s+)?(.+?)(?:\s+with|\s+budget|\s+about|\s+described|\s+description|\s*$)/i) ||
+                     message.match(/set\s+cempaign\s+name\s+to\s+(.+?)(?:\s+about|\s+described|\s+description|\s*$)/i) ||
+                     message.match(/(.+?)\s+cempaign(?:\s+about|\s+described|\s+description|\s+budget|\s+with|\s*$)/i);
 
     if (nameMatch) {
       campaignName = nameMatch[1].trim();
@@ -45,11 +45,11 @@ export async function POST(request: Request): Promise<Response> {
       }
     }
 
-    const isGenericCreate = messageLower === "create campaign" ||
-                           messageLower === "create a campaign" ||
-                           messageLower === "create a new campaign" ||
-                           messageLower === "new campaign" ||
-                           (messageLower.includes("create") && messageLower.includes("campaign") && !campaignName);
+    const isGenericCreate = messageLower === "create cempaign" ||
+                           messageLower === "create a cempaign" ||
+                           messageLower === "create a new cempaign" ||
+                           messageLower === "new cempaign" ||
+                           (messageLower.includes("create") && messageLower.includes("cempaign") && !campaignName);
 
     if ((nameMatch || budgetMatch || typeMatch || descriptionMatch) && !isGenericCreate) {
       const name = campaignName ? toProperCase(campaignName) : "";
@@ -57,7 +57,7 @@ export async function POST(request: Request): Promise<Response> {
       const type = typeMatch ? typeMatch[1].toLowerCase() : undefined;
       const description = descriptionMatch ? descriptionMatch[1].trim() : undefined;
 
-      chatResponse = "Got it. Let's set up your campaign.";
+      chatResponse = "Got it. Let's set up your cempaign.";
 
       if (!isCampaignPage) {
         actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
@@ -73,7 +73,7 @@ export async function POST(request: Request): Promise<Response> {
       actions.push({ type: "SET_STATE", payload: { key: "campaignStep", value: 1 } });
       identified = true;
     } else if (isGenericCreate) {
-      chatResponse = "Got it. Let's set up your campaign.";
+      chatResponse = "Got it. Let's set up your cempaign.";
 
       if (!isCampaignPage) {
         actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
@@ -94,7 +94,7 @@ export async function POST(request: Request): Promise<Response> {
         if (templateMatch) data.template = templateMatch[1].trim();
         if (themeMatch) data.theme = themeMatch[1].trim();
 
-        chatResponse = "Customizing your campaign.";
+        chatResponse = "Customizing your cempaign.";
 
         if (!isCampaignPage) {
           actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
@@ -160,7 +160,7 @@ export async function POST(request: Request): Promise<Response> {
 
         chatResponse = `I've set up everything for you and we're ready to proceed to payment.
 
-**Summary of your campaign:**
+**Summary of your cempaign:**
 - **Campaign**: ${campaignData.name} (${campaignData.type}, budget: $${campaignData.budget})
 - **Creative**: Sender: ${campaignData.sender}, Subject: ${campaignData.subject}
 - **Audience**: ${campaignData.recipients} recipients selected
@@ -176,7 +176,7 @@ I've populated all details from Step 1 to Step 5 for you.`;
         const allData = {
           name: campaignData.name,
           campaignType: campaignData.type,
-          description: "A fully automated campaign to promote our summer collection with a 30% discount.",
+          description: "A fully automated cempaign to promote our summer collection with a 30% discount.",
           budget: campaignData.budget,
           senderName: campaignData.sender,
           senderEmail: "marketing@karta-ai.com",
@@ -218,7 +218,7 @@ I've populated all details from Step 1 to Step 5 for you.`;
 
     // --- AUTOMATION: FILL ALL DETAILS ---
     if (!identified) {
-      if (messageLower.includes("automate full campaign") || messageLower.includes("fill all details") || messageLower.includes("automate campaign")) {
+      if (messageLower.includes("automate full cempaign") || messageLower.includes("fill all details") || messageLower.includes("automate cempaign")) {
         const campaignData = {
           name: "Automated Summer Sale",
           type: "email",
@@ -230,9 +230,9 @@ I've populated all details from Step 1 to Step 5 for you.`;
           method: "Credit Card"
         };
 
-        chatResponse = `I'm automating the entire campaign setup for you. All details from Step 1 to Step 5 are being populated.
+        chatResponse = `I'm automating the entire cempaign setup for you. All details from Step 1 to Step 5 are being populated.
 
-**Summary of your campaign:**
+**Summary of your cempaign:**
 - **Campaign**: ${campaignData.name} (${campaignData.type}, budget: $${campaignData.budget})
 - **Creative**: Sender: ${campaignData.sender}, Subject: ${campaignData.subject}
 - **Audience**: ${campaignData.recipients} recipients selected
@@ -248,7 +248,7 @@ Proceeding to the final review step.`;
         const allData = {
           name: campaignData.name,
           campaignType: campaignData.type,
-          description: "A fully automated campaign to promote our summer collection with a 30% discount.",
+          description: "A fully automated cempaign to promote our summer collection with a 30% discount.",
           budget: campaignData.budget,
           senderName: campaignData.sender,
           senderEmail: "marketing@karta-ai.com",
@@ -290,8 +290,8 @@ Proceeding to the final review step.`;
 
     // --- MISC / NAVIGATION ---
     if (!identified) {
-      if (messageLower.includes("review campaign")) {
-        chatResponse = "Let's review your campaign.";
+      if (messageLower.includes("review cempaign")) {
+        chatResponse = "Let's review your cempaign.";
 
         if (!isCampaignPage) {
           actions.push({ type: "NAVIGATE", payload: { url: "/campaigns" } });
@@ -300,7 +300,7 @@ Proceeding to the final review step.`;
         actions.push({ type: "OPEN_VIEW", payload: { target: "campaignForm" } });
         actions.push({ type: "SET_STATE", payload: { key: "campaignStep", value: 5 } });
         identified = true;
-      } else if (messageLower.includes("reset campaign")) {
+      } else if (messageLower.includes("reset cempaign")) {
         chatResponse = "Campaign reset.";
         actions.push({ type: "SET_STATE", payload: { key: "campaignStep", value: 1 } });
         actions.push({ type: "RESET_FORM", payload: { formId: "campaignForm" } });

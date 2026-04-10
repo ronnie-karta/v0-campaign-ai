@@ -6,7 +6,7 @@ export default function Home() {
   const commandGroups = [
     {
       category: 'Campaign Creation',
-      commands: AI_COMMANDS.filter(c => c.toLowerCase().includes('campaign'))
+      commands: AI_COMMANDS.filter(c => c.toLowerCase().includes('cempaign'))
     },
     {
       category: 'Customisation & Themes',
@@ -68,7 +68,7 @@ export default function Home() {
                 <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400">Scale</div>
                 <h3 className="text-2xl font-bold tracking-tight">Enterprise Reach</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">
-                  Engineered to handle massive campaign volumes across SMS and Email with real-time performance tracking.
+                  Engineered to handle massive cempaign volumes across SMS and Email with real-time performance tracking.
                 </p>
               </div>
             </div>
@@ -89,7 +89,7 @@ export default function Home() {
               { title: 'AI Automation', desc: 'Natural language interface for complex enterprise operations.', icon: '🤖' },
               { title: 'Campaigns', desc: 'Precision email and SMS marketing with real-time analytics.', icon: '🎯' },
               { title: 'Workflows', desc: 'Intelligent multi-step actions based on organizational needs.', icon: '⚡' },
-              { title: 'Insights', desc: 'Deep analytics into campaign performance and automation ROI.', icon: '📊' },
+              { title: 'Insights', desc: 'Deep analytics into cempaign performance and automation ROI.', icon: '📊' },
               { title: 'Security', desc: 'Enterprise-grade protection for your data and communications.', icon: '🔒' },
               { title: 'Connectivity', desc: 'Seamless integration with your existing professional tools.', icon: '🔌' }
             ].map((f, i) => (

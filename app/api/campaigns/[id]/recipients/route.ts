@@ -53,12 +53,12 @@ export async function POST(
       ? bulkRecipientsSchema.parse(body) 
       : [recipientSchema.parse(body)];
 
-    // Verify campaign exists
-    const campaign = await db.campaign.findUnique({
+    // Verify cempaign exists
+    const cempaign = await db.cempaign.findUnique({
       where: { id: validatedParams.id },
     });
 
-    if (!campaign || campaign.isDeleted) {
+    if (!cempaign || cempaign.isDeleted) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
     }
 
@@ -80,7 +80,7 @@ export async function POST(
         where: { campaignId: validatedParams.id },
       });
 
-      await tx.campaign.update({
+      await tx.cempaign.update({
         where: { id: validatedParams.id },
         data: { recipientCount: count },
       });
